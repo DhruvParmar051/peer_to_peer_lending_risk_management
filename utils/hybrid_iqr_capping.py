@@ -1,22 +1,40 @@
 import numpy as np
 import pandas as pd
+<<<<<<< HEAD
 
 from utils.logger import get_logger   
  
 logger = get_logger(__name__)
 
+=======
+import logging
+
+logging.basicConfig(
+    level=logging.INFO, 
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+>>>>>>> 81b372d (data cleaning created)
 
 def hybrid_iqr_capping(df: pd.DataFrame, cols: list, factor: float = 1.5):
     """
     Caps extreme values using IQR bounds instead of removing rows.
     Returns both the capped DataFrame and a capping summary.
     """
+<<<<<<< HEAD
     logger.info(f"Columns: {len(cols)} | Factor: {factor}")
+=======
+    logging.info("Starting Hybrid IQR Outlier Treatment")
+    logging.info(f"Columns: {len(cols)} | Factor: {factor}")
+>>>>>>> 81b372d (data cleaning created)
 
     df_before = df.copy()
     for col in cols:
         if col not in df.columns or df[col].dtype.kind not in "bifc":
+<<<<<<< HEAD
             logger.warning(f"Skipping non-numeric or missing column: {col}")
+=======
+            logging.warning(f"Skipping non-numeric or missing column: {col}")
+>>>>>>> 81b372d (data cleaning created)
             continue
 
         Q1 = df[col].quantile(0.25)
@@ -30,10 +48,17 @@ def hybrid_iqr_capping(df: pd.DataFrame, cols: list, factor: float = 1.5):
         num_capped = (df[col] != capped).sum()
         df[col] = capped
 
+<<<<<<< HEAD
         logger.info(f"{col}: capped {num_capped} values [{lower:.2f}, {upper:.2f}]")
 
     summary_df = evaluate_capping_effect(df_before, df, cols)
     logger.info("Hybrid IQR capping completed (no rows removed).")
+=======
+        logging.info(f"{col}: capped {num_capped} values [{lower:.2f}, {upper:.2f}]")
+
+    summary_df = evaluate_capping_effect(df_before, df, cols)
+    logging.info("Hybrid IQR capping completed (no rows removed).")
+>>>>>>> 81b372d (data cleaning created)
     return df, summary_df
 
 
@@ -60,5 +85,9 @@ def evaluate_capping_effect(df_before: pd.DataFrame, df_after: pd.DataFrame, col
         })
     
     summary_df = pd.DataFrame(summary)
+<<<<<<< HEAD
     logger.info("Capping evaluation summary generated.")
+=======
+    logging.info("Capping evaluation summary generated.")
+>>>>>>> 81b372d (data cleaning created)
     return summary_df

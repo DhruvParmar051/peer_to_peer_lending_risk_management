@@ -1,7 +1,11 @@
 from fredapi import Fred
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
-API_KEY = "ec72da52c30ae529e1a9b3b61ed670d2" 
+# Load API key from .env file
+load_dotenv()
+API_KEY = os.getenv("FRED_API_KEY")
 
 fred = Fred(api_key=API_KEY)
 
@@ -18,7 +22,6 @@ states = {
     'VA': 'VAUR', 'WA': 'WAUR', 'WV': 'WVUR', 'WI': 'WIUR', 'WY': 'WYUR'
 }
 
-
 dfs = []
 for st, series_id in states.items():
     data = fred.get_series(series_id)
@@ -31,6 +34,6 @@ for st, series_id in states.items():
 
 fred_df = pd.concat(dfs)
 fred_df['quarter'] = pd.to_datetime(fred_df['DATE']).dt.to_period('Q')
-fred_df.to_csv(r"../data/unemployment_rate_by_state.csv", index=False)
+fred_df.to_csv(r"data/unemployment_rate_by_state.csv", index=False)
 
 print("Saved unemployment_rate_by_state.csv")

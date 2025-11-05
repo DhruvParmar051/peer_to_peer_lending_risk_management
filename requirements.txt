@@ -7,3 +7,4 @@ seaborn
 ipykernel
 jupyterlab
 fredapi
+python-dotenv

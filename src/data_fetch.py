@@ -1,5 +1,6 @@
 from fredapi import Fred
 import pandas as pd
+import os
 
 API_KEY = "ec72da52c30ae529e1a9b3b61ed670d2" 
 
@@ -31,6 +32,9 @@ for st, series_id in states.items():
 
 fred_df = pd.concat(dfs)
 fred_df['quarter'] = pd.to_datetime(fred_df['DATE']).dt.to_period('Q')
-fred_df.to_csv(r"../data/unemployment_rate_by_state.csv", index=False)
+output_path = os.path.join(os.getcwd(), "data", "unemployment_rate_by_state.csv")
+os.makedirs(os.path.dirname(output_path), exist_ok=True)
+fred_df.to_csv(output_path, index=False)
+
 
 print("Saved unemployment_rate_by_state.csv")

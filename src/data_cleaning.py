@@ -113,7 +113,7 @@ def clean_data_pipeline(input_path, output_dir):
     logging.info("Hybrid IQR capping completed.")
 
     # Create output directories
-    output_files_dir = os.path.join(output_dir, "files")
+    output_files_dir = os.path.join(output_dir)
     os.makedirs(output_files_dir, exist_ok=True)
 
     # Save initial capping summary

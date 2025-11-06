@@ -9,6 +9,10 @@ seaborn
 ipykernel
 jupyterlab
 fredapi
+<<<<<<< HEAD
 xgboost
 
 pyarrow
+=======
+xgboost
+>>>>>>> 0546931 (model)

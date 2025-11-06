@@ -19,6 +19,7 @@ def merge_datasets():
 
     # Save merged dataset
 <<<<<<< HEAD
+<<<<<<< HEAD
     output_dir = os.path.join("data", 'raw_data')
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, 'data.parquet')
@@ -26,6 +27,12 @@ def merge_datasets():
 =======
     merged_data.to_csv(os.path.join("data", 'raw_data' ,"data.gzip"), index=False)
 >>>>>>> 81b372d (data cleaning created)
+=======
+    output_dir = os.path.join("data", 'raw_data')
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, 'data.gzip')
+    merged_data.to_csv(output_path, index=False)
+>>>>>>> 54fff53 (update in data_merge)
     print("Saved data.csv")
     
 merge_datasets()

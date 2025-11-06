@@ -33,7 +33,7 @@ def load_data(file_path: str) -> pd.DataFrame:
     if not os.path.exists(file_path):
         logger.error(f"File not found: {file_path}")
         raise FileNotFoundError(f"File not found: {file_path}")
-    df = pd.read_csv(file_path, low_memory=True)
+    df = pd.read_csv(file_path, low_memory=True, compression='gzip')
     logger.info(f"Loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns")
     return df
 

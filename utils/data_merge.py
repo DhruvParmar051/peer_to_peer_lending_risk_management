@@ -18,7 +18,7 @@ def merge_datasets():
     )
 
     # Save merged dataset
-    merged_data.to_csv(os.path.join("data", "data.gzip"), index=False)
+    merged_data.to_csv(os.path.join("data", 'raw_data' ,"data.gzip"), index=False)
     print("Saved data.csv")
     
 merge_datasets()

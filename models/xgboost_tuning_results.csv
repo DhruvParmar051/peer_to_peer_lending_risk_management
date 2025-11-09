@@ -1,0 +1,2 @@
+accuracy,precision,recall,f1,roc_auc,colsample_bytree,gamma,learning_rate,max_depth,n_estimators,subsample,cv_f1
+0.9669033972586544,0.9327341383221582,0.8948702407846162,0.9134099616858238,0.9903577798790995,1.0,0.1,0.1,8,500,0.8,0.9111891437175492

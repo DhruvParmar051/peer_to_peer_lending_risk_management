@@ -21,9 +21,12 @@ def hybrid_iqr_capping(df: pd.DataFrame, cols: list, factor: float = 1.5):
     Returns both the capped DataFrame and a capping summary.
     """
 <<<<<<< HEAD
+<<<<<<< HEAD
     logger.info(f"Columns: {len(cols)} | Factor: {factor}")
 =======
     logging.info("Starting Hybrid IQR Outlier Treatment")
+=======
+>>>>>>> 91a139b (pipeline updated)
     logging.info(f"Columns: {len(cols)} | Factor: {factor}")
 >>>>>>> 81b372d (data cleaning created)
 

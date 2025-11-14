@@ -5,7 +5,6 @@ import logging
 import warnings
 
 from utils.data_load import load_data
-from utils.data_save import save_cleaned_data
 from utils.hybrid_iqr_capping import hybrid_iqr_capping, evaluate_capping_effect
 
 warnings.filterwarnings("ignore")
@@ -73,9 +72,7 @@ def clean_data_pipeline(input_path, output_dir):
     logging.info("Starting data cleaning pipeline.")
 
     # Load dataset
-    logging.info(f"Loading dataset from {input_path}")
     df = load_data(input_path)
-    logging.info(f"Loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns")
 
     # Drop unnecessary columns
     drop_cols = [
@@ -144,6 +141,6 @@ def clean_data_pipeline(input_path, output_dir):
     summary_df.to_csv(summary_path_final, index=False)
     logging.info(f"Updated capping summary saved: {summary_path_final}")
 
-    output_path = os.path.join(output_files_dir, "cleaned_data.gzip")
-    df_capped.to_csv(output_path, index=False, compression="gzip")
+    output_path = os.path.join(output_files_dir, "cleaned_data.parquet")
+    df_capped.to_csv(output_path, index=False)
     logging.info(f"Final cleaned data saved: {output_path}")

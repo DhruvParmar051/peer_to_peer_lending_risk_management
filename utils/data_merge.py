@@ -30,9 +30,14 @@ def merge_datasets():
 =======
     output_dir = os.path.join("data", 'raw_data')
     os.makedirs(output_dir, exist_ok=True)
+<<<<<<< HEAD
     output_path = os.path.join(output_dir, 'data.gzip')
     merged_data.to_csv(output_path, index=False)
 >>>>>>> 54fff53 (update in data_merge)
+=======
+    output_path = os.path.join(output_dir, 'data.parquet')
+    merged_data.to_parquet(output_path, index=False)
+>>>>>>> 91a139b (pipeline updated)
     print("Saved data.csv")
     
 merge_datasets()

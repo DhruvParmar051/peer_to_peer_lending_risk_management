@@ -10,9 +10,15 @@ ipykernel
 jupyterlab
 fredapi
 <<<<<<< HEAD
+<<<<<<< HEAD
 xgboost
 
 pyarrow
 =======
 xgboost
 >>>>>>> 0546931 (model)
+=======
+xgboost
+
+pyarrow
+>>>>>>> 91a139b (pipeline updated)

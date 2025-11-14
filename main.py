@@ -37,14 +37,18 @@ def main():
 =======
 >>>>>>> 213bd46 (pipeline mistake cleaning)
     # PATH CONFIGURATION
-    RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.gzip")
+    RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.parquet")
 
     CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned_data")
-    CLEANED_OUTPUT = os.path.join(CLEANED_DIR, "cleaned_data.gzip")
+    CLEANED_OUTPUT = os.path.join(CLEANED_DIR, "cleaned_data.parquet")
 
     FEATURE_DIR = os.path.join(BASE_DIR, "data", "feature_engineered")
+<<<<<<< HEAD
     FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.gzip")
 >>>>>>> 8f92a09 (pipeline created)
+=======
+    FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.parquet")
+>>>>>>> 91a139b (pipeline updated)
 
     PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
 

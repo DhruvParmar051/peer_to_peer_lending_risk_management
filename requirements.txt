@@ -5,10 +5,10 @@ dotenv
 
 scikit-learn
 matplotlib
+xgboost
 seaborn
+
 ipykernel
 jupyterlab
 fredapi
-xgboost
-
 pyarrow

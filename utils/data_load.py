@@ -21,6 +21,7 @@ def load_data(file_path: str) -> pd.DataFrame:
     """Loads merged dataset from CSV."""
     logger.info(f"Loading dataset from {file_path}")
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     if not os.path.exists(file_path):
         logger.error(f"File not found: {file_path}")
@@ -30,11 +31,13 @@ def load_data(file_path: str) -> pd.DataFrame:
     logger.info(f"Loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns")
     return df
 =======
+=======
+    
+>>>>>>> 9cc7e8d (updates)
     if not os.path.exists(file_path):
         logger.error(f"File not found: {file_path}")
         raise FileNotFoundError(f"File not found: {file_path}")
         
-    
     df = pd.read_parquet(file_path)
     logger.info(f"Loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns")
     return df

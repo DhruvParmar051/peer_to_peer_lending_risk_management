@@ -142,5 +142,5 @@ def clean_data_pipeline(input_path, output_dir):
     logging.info(f"Updated capping summary saved: {summary_path_final}")
 
     output_path = os.path.join(output_files_dir, "cleaned_data.parquet")
-    df_capped.to_csv(output_path, index=False)
+    df_capped.to_parquet(output_path, index=False)
     logging.info(f"Final cleaned data saved: {output_path}")

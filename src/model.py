@@ -4,7 +4,7 @@ import logging
 import warnings
 import joblib
 
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (
     classification_report, accuracy_score, precision_score,
     recall_score, f1_score, roc_auc_score
@@ -44,31 +44,37 @@ def tune_xgboost(X_train, y_train):
         use_label_encoder=False
     )
 
-    param_grid = {
-        "n_estimators": [300, 500],
-        "learning_rate": [0.05, 0.1],
-        "max_depth": [4, 6, 8],
-        "subsample": [0.7, 0.8],
-        "colsample_bytree": [0.7, 0.8],
-        "gamma": [0.1, 0.2]
+    param_dist = {
+    "n_estimators": [300, 500, 800, 1200],
+    "learning_rate": [0.01, 0.03, 0.05, 0.1],
+    "max_depth": [4, 6, 8, 10],
+    "min_child_weight": [1, 3, 5],
+    "subsample": [0.5, 0.6, 0.7, 0.8, 1.0],
+    "colsample_bytree": [0.5, 0.6, 0.7, 0.8, 1.0],
+    "gamma": [0, 0.1, 0.2, 0.3, 1],
+    "reg_alpha": [0, 0.01, 0.1, 1],
+    "reg_lambda": [1, 1.5, 2, 3]
     }
 
-    grid_search = GridSearchCV(
-        estimator=xgb,
-        param_grid=param_grid,
-        scoring="f1",
-        cv=3,
-        verbose=2,
-        n_jobs=-1
+    rs = RandomizedSearchCV(
+    estimator=xgb,
+    param_distributions=param_dist,
+    n_iter=15,
+    cv=3,
+    scoring="f1",
+    n_jobs=-1,
+    verbose=2,
+    random_state=42
     )
 
-    grid_search.fit(X_train, y_train)
 
-    logger.info(f"Best Parameters: {grid_search.best_params_}")
-    logger.info(f"Best F1 Score (CV): {grid_search.best_score_:.4f}")
+    rs.fit(X_train, y_train)
 
-    best_model = grid_search.best_estimator_
-    return best_model, grid_search.best_params_, grid_search.best_score_
+    logger.info(f"Best Parameters: {rs.best_params_}")
+    logger.info(f"Best F1 Score (CV): {rs.best_score_:.4f}")
+
+    best_model = rs.best_estimator_
+    return best_model, rs.best_params_, rs.best_score_
 
 
 def evaluate_model(model, X_test, y_test):

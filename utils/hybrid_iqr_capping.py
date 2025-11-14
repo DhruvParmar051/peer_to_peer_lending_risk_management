@@ -12,7 +12,6 @@ def hybrid_iqr_capping(df: pd.DataFrame, cols: list, factor: float = 1.5):
     Caps extreme values using IQR bounds instead of removing rows.
     Returns both the capped DataFrame and a capping summary.
     """
-    logging.info("Starting Hybrid IQR Outlier Treatment")
     logging.info(f"Columns: {len(cols)} | Factor: {factor}")
 
     df_before = df.copy()

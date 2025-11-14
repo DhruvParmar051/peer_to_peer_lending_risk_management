@@ -23,13 +23,13 @@ def main():
     BASE_DIR = os.getcwd()
 
     # PATH CONFIGURATION
-    RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.gzip")
+    RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.parquet")
 
     CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned_data")
-    CLEANED_OUTPUT = os.path.join(CLEANED_DIR, "cleaned_data.gzip")
+    CLEANED_OUTPUT = os.path.join(CLEANED_DIR, "cleaned_data.parquet")
 
     FEATURE_DIR = os.path.join(BASE_DIR, "data", "feature_engineered")
-    FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.gzip")
+    FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.parquet")
 
     PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
 

@@ -4,7 +4,7 @@ import logging
 import warnings
 import joblib
 
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (
     classification_report, accuracy_score, precision_score,
     recall_score, f1_score, roc_auc_score
@@ -22,10 +22,10 @@ def load_processed_data(processed_dir: str):
     Load preprocessed train/test data.
     """
     logger.info("Loading preprocessed data for model tuning.")
-    X_train = pd.read_csv(os.path.join(processed_dir, "X_train_processed.csv"))
-    X_test = pd.read_csv(os.path.join(processed_dir, "X_test_processed.csv"))
-    y_train = pd.read_csv(os.path.join(processed_dir, "y_train.csv")).squeeze()
-    y_test = pd.read_csv(os.path.join(processed_dir, "y_test.csv")).squeeze()
+    X_train = pd.read_parquet(os.path.join(processed_dir, "X_train_processed.parquet"))
+    X_test = pd.read_parquet(os.path.join(processed_dir, "X_test_processed.parquet"))
+    y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet")).squeeze()
+    y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet")).squeeze()
 
     logger.info(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
     return X_train, X_test, y_train, y_test
@@ -44,7 +44,7 @@ def tune_xgboost(X_train, y_train):
         use_label_encoder=False
     )
 
-    param_grid = {
+    param_dist = {
         "n_estimators": [300, 500],
         "learning_rate": [0.05, 0.1],
         "max_depth": [4, 6, 8],
@@ -53,22 +53,25 @@ def tune_xgboost(X_train, y_train):
         "gamma": [0.1, 0.2]
     }
 
-    grid_search = GridSearchCV(
-        estimator=xgb,
-        param_grid=param_grid,
-        scoring="f1",
-        cv=3,
-        verbose=2,
-        n_jobs=-1
+    rs = RandomizedSearchCV(
+    estimator=xgb,
+    param_distributions=param_dist,
+    n_iter=15,
+    cv=3,
+    scoring="f1",
+    n_jobs=-1,
+    verbose=2,
+    random_state=42
     )
 
-    grid_search.fit(X_train, y_train)
 
-    logger.info(f"Best Parameters: {grid_search.best_params_}")
-    logger.info(f"Best F1 Score (CV): {grid_search.best_score_:.4f}")
+    rs.fit(X_train, y_train)
 
-    best_model = grid_search.best_estimator_
-    return best_model, grid_search.best_params_, grid_search.best_score_
+    logger.info(f"Best Parameters: {rs.best_params_}")
+    logger.info(f"Best F1 Score (CV): {rs.best_score_:.4f}")
+
+    best_model = rs.best_estimator_
+    return best_model, rs.best_params_, rs.best_score_
 
 
 def evaluate_model(model, X_test, y_test):

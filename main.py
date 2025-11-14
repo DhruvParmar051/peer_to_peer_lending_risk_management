@@ -23,6 +23,7 @@ def main():
     BASE_DIR = os.getcwd()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     # PATH CONFIGURATION
     RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.parquet")
 
@@ -33,8 +34,9 @@ def main():
     FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.parquet")
 =======
     # -------------------------------
+=======
+>>>>>>> 213bd46 (pipeline mistake cleaning)
     # PATH CONFIGURATION
-    # -------------------------------
     RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.gzip")
 
     CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned_data")
@@ -55,6 +57,7 @@ def main():
     os.makedirs(MODEL_DIR, exist_ok=True)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     # STEP 1: cleaning
     logger.info("STEP 1: Running Data Cleaning Pipeline")
@@ -73,25 +76,29 @@ def main():
     # -------------------------------
     # STEP 1: CLEANING
     # -------------------------------
+=======
+
+    # STEP 1: cleaning
+>>>>>>> 213bd46 (pipeline mistake cleaning)
     logger.info("STEP 1: Running Data Cleaning Pipeline")
     clean_data_pipeline(RAW_DATA_PATH, CLEANED_DIR)
 
-    # -------------------------------
-    # STEP 2: FEATURE ENGINEERING
-    # -------------------------------
+    # STEP 2: feature engineering
     logger.info("STEP 2: Running Feature Engineering Pipeline")
     feature_engineering_pipeline(CLEANED_OUTPUT, FEATURE_DIR)
 
-    # -------------------------------
-    # STEP 3: PREPROCESSING
-    # -------------------------------
+    # STEP 3: preprocessing
     logger.info("STEP 3: Running Data Preprocessing Pipeline")
     data_preprocessing_pipeline(FEATURE_OUTPUT, PROCESSED_DIR)
 
+<<<<<<< HEAD
     # -------------------------------
     # STEP 4: MODEL TRAIN + TUNING
     # -------------------------------
 >>>>>>> 8f92a09 (pipeline created)
+=======
+    # STEP 4: Model Training + Tuning
+>>>>>>> 213bd46 (pipeline mistake cleaning)
     logger.info("STEP 4: Running Model Tuning Pipeline")
     model_tuning_pipeline(PROCESSED_DIR, MODEL_DIR)
 

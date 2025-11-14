@@ -48,9 +48,9 @@ def tune_xgboost(X_train, y_train):
         "n_estimators": [300, 500],
         "learning_rate": [0.05, 0.1],
         "max_depth": [4, 6, 8],
-        "subsample": [0.7, 0.8, 1.0],
-        "colsample_bytree": [0.7, 0.8, 1.0],
-        "gamma": [0, 0.1, 0.2]
+        "subsample": [0.7, 0.8],
+        "colsample_bytree": [0.7, 0.8],
+        "gamma": [0.1, 0.2]
     }
 
     grid_search = GridSearchCV(
@@ -134,9 +134,3 @@ def model_tuning_pipeline(processed_dir: str, model_output_dir: str):
     logger.info("XGBoost model tuning pipeline completed successfully.")
 
 
-if __name__ == "__main__":
-    processed_dir = os.path.join(os.getcwd(), "data", "processed")
-    model_output_dir = os.path.join(os.getcwd(), "models")
-    os.makedirs(model_output_dir, exist_ok=True)
-
-    model_tuning_pipeline(processed_dir, model_output_dir)

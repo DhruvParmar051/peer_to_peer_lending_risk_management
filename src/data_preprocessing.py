@@ -116,11 +116,3 @@ def data_preprocessing_pipeline(input_path: str, output_dir: str):
 
     logger.info(f"Preprocessed data saved to: {output_dir}")
     logger.info("Data preprocessing pipeline completed successfully.")
-
-
-if __name__ == "__main__":
-    input_path = os.path.join(os.getcwd(), "data", "feature_engineered", "engineered_data.gzip")
-    output_dir = os.path.join(os.getcwd(), "data", "processed")
-    os.makedirs(output_dir, exist_ok=True)
-
-    data_preprocessing_pipeline(input_path, output_dir)

@@ -22,6 +22,7 @@ def main():
 
     BASE_DIR = os.getcwd()
 
+<<<<<<< HEAD
     # PATH CONFIGURATION
     RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.parquet")
 
@@ -30,6 +31,18 @@ def main():
 
     FEATURE_DIR = os.path.join(BASE_DIR, "data", "feature_engineered")
     FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.parquet")
+=======
+    # -------------------------------
+    # PATH CONFIGURATION
+    # -------------------------------
+    RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw_data", "data.gzip")
+
+    CLEANED_DIR = os.path.join(BASE_DIR, "data", "cleaned_data")
+    CLEANED_OUTPUT = os.path.join(CLEANED_DIR, "cleaned_data.gzip")
+
+    FEATURE_DIR = os.path.join(BASE_DIR, "data", "feature_engineered")
+    FEATURE_OUTPUT = os.path.join(FEATURE_DIR, "engineered_data.gzip")
+>>>>>>> 8f92a09 (pipeline created)
 
     PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
 
@@ -41,6 +54,7 @@ def main():
     os.makedirs(PROCESSED_DIR, exist_ok=True)
     os.makedirs(MODEL_DIR, exist_ok=True)
 
+<<<<<<< HEAD
 
     # STEP 1: cleaning
     logger.info("STEP 1: Running Data Cleaning Pipeline")
@@ -55,6 +69,29 @@ def main():
     # data_preprocessing_pipeline(FEATURE_OUTPUT, PROCESSED_DIR)
 
     # STEP 4: Model Training + Tuning
+=======
+    # -------------------------------
+    # STEP 1: CLEANING
+    # -------------------------------
+    logger.info("STEP 1: Running Data Cleaning Pipeline")
+    clean_data_pipeline(RAW_DATA_PATH, CLEANED_DIR)
+
+    # -------------------------------
+    # STEP 2: FEATURE ENGINEERING
+    # -------------------------------
+    logger.info("STEP 2: Running Feature Engineering Pipeline")
+    feature_engineering_pipeline(CLEANED_OUTPUT, FEATURE_DIR)
+
+    # -------------------------------
+    # STEP 3: PREPROCESSING
+    # -------------------------------
+    logger.info("STEP 3: Running Data Preprocessing Pipeline")
+    data_preprocessing_pipeline(FEATURE_OUTPUT, PROCESSED_DIR)
+
+    # -------------------------------
+    # STEP 4: MODEL TRAIN + TUNING
+    # -------------------------------
+>>>>>>> 8f92a09 (pipeline created)
     logger.info("STEP 4: Running Model Tuning Pipeline")
     model_tuning_pipeline(PROCESSED_DIR, MODEL_DIR)
 
@@ -62,4 +99,8 @@ def main():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     main()
+=======
+    main()
+>>>>>>> 8f92a09 (pipeline created)

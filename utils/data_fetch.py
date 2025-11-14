@@ -35,9 +35,13 @@ for st, series_id in states.items():
 fred_df = pd.concat(dfs)
 fred_df['quarter'] = pd.to_datetime(fred_df['DATE']).dt.to_period('Q')
 <<<<<<< HEAD
+<<<<<<< HEAD
 fred_df.to_csv(r"data/unemployment_rate_by_state.csv", compression='gzip',index=False)
 =======
 fred_df.to_csv(r"data/unemployment_rate_by_state.csv", index=False)
 >>>>>>> f81f2d0 (.env created)
+=======
+fred_df.to_csv(r"data/unemployment_rate_by_state.csv", compression='gzip',index=False)
+>>>>>>> 8f92a09 (pipeline created)
 
 print("Saved unemployment_rate_by_state.csv")

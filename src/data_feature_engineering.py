@@ -75,11 +75,3 @@ def feature_engineering_pipeline(input_path: str, output_dir: str):
 
     logger.info(f"Feature engineered data saved to: {output_path}")
     logger.info("Feature engineering pipeline completed successfully.")
-
-
-if __name__ == "__main__":
-    input_path = os.path.join(os.getcwd(), "data", "cleaned_data", "cleaned_data.gzip")
-    output_dir = os.path.join(os.getcwd(), "data", "feature_engineered")
-    os.makedirs(output_dir, exist_ok=True)
-
-    feature_engineering_pipeline(input_path, output_dir)

@@ -5,10 +5,13 @@ dotenv
 
 scikit-learn
 matplotlib
+xgboost
 seaborn
+
 ipykernel
 jupyterlab
 fredapi
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 xgboost
@@ -22,3 +25,6 @@ xgboost
 
 pyarrow
 >>>>>>> 91a139b (pipeline updated)
+=======
+pyarrow
+>>>>>>> 1a5cea7 (requirements.txt updated)

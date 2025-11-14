@@ -1,17 +1,16 @@
 import os
 import numpy as np
 import pandas as pd
-import logging
 import warnings
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from utils.data_load import load_data
+from utils.logger import get_logger
 
 warnings.filterwarnings("ignore")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def create_target(df: pd.DataFrame) -> pd.DataFrame:

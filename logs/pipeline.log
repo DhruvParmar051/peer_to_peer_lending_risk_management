@@ -1,0 +1,7 @@
+2025-11-14 18:09:25,001 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-14 18:09:25,002 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-14 18:09:25,002 - INFO - src.data_cleaning - Starting data cleaning pipeline.
+2025-11-14 18:09:25,003 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\raw_data\data.parquet
+2025-11-14 18:09:34,906 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 145 columns
+2025-11-14 18:09:37,662 - INFO - src.data_cleaning - Dropped 12 unnecessary columns.
+2025-11-14 18:09:37,665 - INFO - src.data_cleaning - Standardizing data types.

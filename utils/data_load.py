@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 from utils.logger import get_logger 
 
@@ -16,6 +17,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 >>>>>>> 81b372d (data cleaning created)
+=======
+
+from utils.logger import get_logger 
+
+
+logger = get_logger(__name__)
+>>>>>>> 9a1af4c (created new logger module)
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Loads merged dataset from CSV."""

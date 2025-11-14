@@ -1,13 +1,11 @@
 import os
 import pandas as pd
 import numpy as np
-import logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
+from utils.logger import get_logger 
+
+
+logger = get_logger(__name__)
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Loads merged dataset from CSV."""

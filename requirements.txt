@@ -12,3 +12,4 @@ ipykernel
 jupyterlab
 fredapi
 pyarrow
+joblib

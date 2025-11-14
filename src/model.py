@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import logging
 import warnings
@@ -10,11 +11,10 @@ from sklearn.metrics import (
     recall_score, f1_score, roc_auc_score
 )
 from xgboost import XGBClassifier
-from utils.data_load import load_data
+from utils.logger import get_logger
 
 warnings.filterwarnings("ignore")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def load_processed_data(processed_dir: str):
@@ -45,18 +45,18 @@ def tune_xgboost(X_train, y_train):
     )
 
     param_dist = {
-        "n_estimators": [300, 500],
-        "learning_rate": [0.05, 0.1],
-        "max_depth": [4, 6, 8],
-        "subsample": [0.7, 0.8],
-        "colsample_bytree": [0.7, 0.8],
-        "gamma": [0.1, 0.2]
+        "n_estimators": [300, 500,250],
+        "learning_rate": np.linspace(0.03, 0.15, 5),
+        "max_depth": [4, 6, 8,10],
+        "subsample": [0.7, 0.8, 1],
+        "colsample_bytree": [0.7, 0.8,1.0],
+        "gamma": [0.1, 0.2,0.3]
     }
 
     rs = RandomizedSearchCV(
     estimator=xgb,
     param_distributions=param_dist,
-    n_iter=15,
+    n_iter=20,
     cv=3,
     scoring="f1",
     n_jobs=-1,

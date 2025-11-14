@@ -7,15 +7,11 @@ from src.data_cleaning import clean_data_pipeline
 from src.data_feature_engineering import feature_engineering_pipeline
 from src.data_preprocessing import data_preprocessing_pipeline
 from src.model import model_tuning_pipeline
+from utils.logger import get_logger
 
 warnings.filterwarnings("ignore")
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
-
+logger = get_logger(__name__)
 
 def main():
     logger.info("===== STARTING FULL ML PIPELINE =====")

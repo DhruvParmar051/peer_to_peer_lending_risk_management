@@ -22,10 +22,10 @@ def load_processed_data(processed_dir: str):
     Load preprocessed train/test data.
     """
     logger.info("Loading preprocessed data for model tuning.")
-    X_train = pd.read_csv(os.path.join(processed_dir, "X_train_processed.csv"))
-    X_test = pd.read_csv(os.path.join(processed_dir, "X_test_processed.csv"))
-    y_train = pd.read_csv(os.path.join(processed_dir, "y_train.csv")).squeeze()
-    y_test = pd.read_csv(os.path.join(processed_dir, "y_test.csv")).squeeze()
+    X_train = pd.read_parquet(os.path.join(processed_dir, "X_train_processed.parquet"))
+    X_test = pd.read_parquet(os.path.join(processed_dir, "X_test_processed.parquet"))
+    y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet")).squeeze()
+    y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet")).squeeze()
 
     logger.info(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
     return X_train, X_test, y_train, y_test

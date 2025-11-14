@@ -147,9 +147,3 @@ def clean_data_pipeline(input_path, output_dir):
     output_path = os.path.join(output_files_dir, "cleaned_data.gzip")
     df_capped.to_csv(output_path, index=False, compression="gzip")
     logging.info(f"Final cleaned data saved: {output_path}")
-
-if __name__ == "__main__":
-    input_path = os.path.join(os.getcwd(), "data", "raw_data", "data.gzip")
-    output_dir = os.path.join(os.getcwd(), "data", "cleaned_data")
-    os.makedirs(output_dir, exist_ok=True)
-    clean_data_pipeline(input_path, output_dir)

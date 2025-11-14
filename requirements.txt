@@ -1,5 +1,7 @@
 numpy 
 pandas
+dotenv
+
 
 scikit-learn
 matplotlib

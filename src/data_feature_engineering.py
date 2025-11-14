@@ -70,16 +70,8 @@ def feature_engineering_pipeline(input_path: str, output_dir: str):
     df_pca = apply_pca(df)
 
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "engineered_data.gzip")
-    df_pca.to_csv(output_path, index=False, compression="gzip")
+    output_path = os.path.join(output_dir, "engineered_data.parquet")
+    df_pca.to_parquet(output_path, index=False)
 
     logger.info(f"Feature engineered data saved to: {output_path}")
     logger.info("Feature engineering pipeline completed successfully.")
-
-
-if __name__ == "__main__":
-    input_path = os.path.join(os.getcwd(), "data", "cleaned_data", "cleaned_data.gzip")
-    output_dir = os.path.join(os.getcwd(), "data", "feature_engineered")
-    os.makedirs(output_dir, exist_ok=True)
-
-    feature_engineering_pipeline(input_path, output_dir)

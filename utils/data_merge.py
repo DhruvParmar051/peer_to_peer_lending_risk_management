@@ -5,11 +5,9 @@ import pandas as pd
 
 def merge_datasets():
     # Load datasets
-    loan_data = pd.read_csv(os.path.join("data","raw_data", "Loan_status_2007-2020Q3.gzip"), low_memory=False)
-    unemployment_data = pd.read_parquet(os.path.join("data", "unemployment_rate_by_state.csv"))
+    loan_data = pd.read_csv(os.path.join("data", "Loan_status_2007-2020Q3.gzip"), low_memory=False)
+    unemployment_data = pd.read_csv(os.path.join("data", "unemployment_rate_by_state.csv"), low_memory=False)
 
-    unemployment_data['quarter'] = unemployment_data['quarter'].astype(str)
-    
     # Merge datasets on quarter and state
     merged_data = pd.merge(
         loan_data,

@@ -37,6 +37,7 @@ fred_df['quarter'] = pd.to_datetime(fred_df['DATE']).dt.to_period('Q')
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 fred_df.to_csv(r"data/unemployment_rate_by_state.csv", compression='gzip',index=False)
 =======
 fred_df.to_csv(r"data/unemployment_rate_by_state.csv", index=False)
@@ -47,5 +48,8 @@ fred_df.to_csv(r"data/unemployment_rate_by_state.csv", compression='gzip',index=
 =======
 fred_df.to_parquet(r"data/unemployment_rate_by_state.csv", compression='gzip',index=False)
 >>>>>>> 91a139b (pipeline updated)
+=======
+fred_df.to_csv(r"data/unemployment_rate_by_state.csv", compression='gzip',index=False)
+>>>>>>> 4e308d4 (RandomizedSearch)
 
 print("Saved unemployment_rate_by_state.csv")

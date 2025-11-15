@@ -7,7 +7,7 @@ import joblib
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score,
-    f1_score, roc_auc_score, classification_report
+    f1_score, roc_auc_score
 )
 from sklearn.ensemble import StackingClassifier
 from sklearn.linear_model import LogisticRegression
@@ -23,16 +23,16 @@ logger = get_logger(__name__)
 
 
 def load_processed_data(processed_dir: str):
-    """Load train/test processed data"""
     X_train = pd.read_parquet(os.path.join(processed_dir, "X_train_processed.parquet"))
     X_test = pd.read_parquet(os.path.join(processed_dir, "X_test_processed.parquet"))
-    y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet")).squeeze()
-    y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet")).squeeze()
+
+    y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet"))["is_default"]
+    y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet"))["is_default"]
+
     return X_train, X_test, y_train, y_test
 
 
 def evaluate(model, X_test, y_test, name):
-    """Evaluate a trained model"""
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
 
@@ -50,87 +50,106 @@ def evaluate(model, X_test, y_test, name):
 
 
 def tune_with_random_search(model, params, X_train, y_train, name):
-    """Tune model using RandomizedSearchCV"""
     logger.info(f"Tuning {name}...")
 
     rs = RandomizedSearchCV(
         estimator=model,
         param_distributions=params,
-        n_iter=10,
+        n_iter=8,
         cv=2,
         scoring="f1",
         n_jobs=-1,
         verbose=2,
-        random_state=42
+        random_state=42,
+        refit=True
     )
-    rs.fit(X_train, y_train)
 
+    rs.fit(X_train, y_train)
     logger.info(f"{name} best params: {rs.best_params_}")
+
     return rs.best_estimator_
 
 
-# Parameter grids
-
+# XGBoost search space
 xgb_param_dist = {
-    "n_estimators": [300, 500, 800, 1200],
-    "learning_rate": [0.01, 0.03, 0.05, 0.1],
-    "max_depth": [4, 6, 8, 10],
-    "min_child_weight": [1, 3, 5, 7],
-    "subsample": [0.6, 0.7, 0.8, 1.0],
-    "colsample_bytree": [0.5, 0.6, 0.7, 0.8],
-    "gamma": [0, 0.1, 0.2, 0.3],
-    "reg_alpha": [0, 0.01, 0.1, 1],
-    "reg_lambda": [1, 1.5, 2, 3]
+    "n_estimators": [300, 500, 800],
+    "learning_rate": [0.01, 0.03, 0.05],
+    "max_depth": [4, 6, 8],
+    "min_child_weight": [1, 3, 5],
+    "subsample": [0.7, 0.8, 1.0],
+    "colsample_bytree": [0.6, 0.7, 0.8],
+    "gamma": [0, 0.1, 0.2],
+    "reg_alpha": [0, 0.01, 0.1],
+    "reg_lambda": [1, 2, 3]
 }
 
+# LightGBM search space
 lgbm_param_dist = {
     "n_estimators": [300, 500, 800],
     "learning_rate": [0.01, 0.03, 0.05],
     "num_leaves": [15, 31, 50],
-    "max_depth": [3, 4, 5, -1],
-    "min_child_samples": [100, 200, 300],
+    "max_depth": [-1, 4, 6],
+    "min_child_samples": [50, 100, 200],
     "subsample": [0.6, 0.8, 1.0],
     "colsample_bytree": [0.6, 0.8, 1.0],
     "reg_alpha": [0, 0.1, 0.3],
     "reg_lambda": [1, 2, 3]
 }
 
-
+# CatBoost search space
 cat_param_dist = {
     "iterations": [300, 500, 800],
-    "depth": [4, 6, 8, 10],
+    "depth": [4, 6, 8],
     "learning_rate": [0.01, 0.03, 0.05],
-    "l2_leaf_reg": [1, 3, 5, 7],
-    "border_count": [32, 64, 128]
+    "l2_leaf_reg": [1, 3, 5]
 }
 
 
 def model_pipeline(processed_dir: str, model_output_dir: str):
-    """Train, tune, ensemble, evaluate and save best model"""
     logger.info("Model pipeline started")
 
+    # load data
     X_train, X_test, y_train, y_test = load_processed_data(processed_dir)
 
-    # tuned_xgb = tune_with_random_search(
-    #     XGBClassifier(objective="binary:logistic", eval_metric="logloss", random_state=42),
-    #     xgb_param_dist, X_train, y_train, "XGBoost"
-    # )
+    # tune XGBoost
+    tuned_xgb = tune_with_random_search(
+        XGBClassifier(
+            objective="binary:logistic",
+            eval_metric="logloss",
+            tree_method="hist",
+            max_bin=256,
+            random_state=42,
+            n_jobs=-1,
+        ),
+        xgb_param_dist, X_train, y_train, "XGBoost"
+    )
 
-    tuned_lgbm = tune_with_random_search( 
-        LGBMClassifier(random_state=42, force_col_wise=True,  min_split_gain=0.001,n_jobs=-1, verbose=-1),
+    # tune LightGBM
+    tuned_lgbm = tune_with_random_search(
+        LGBMClassifier(
+            random_state=42,
+            n_jobs=-1,
+            force_col_wise=True,
+            verbose=-1
+        ),
         lgbm_param_dist, X_train, y_train, "LightGBM"
     )
 
+    # tune CatBoost
     tuned_cat = tune_with_random_search(
-        CatBoostClassifier(verbose=0, random_state=42),
+        CatBoostClassifier(
+            verbose=0,
+            random_state=42,
+            thread_count=-1
+        ),
         cat_param_dist, X_train, y_train, "CatBoost"
     )
 
+    # stacking model
     logger.info("Training stacking ensemble")
-
     stack = StackingClassifier(
         estimators=[
-            # ("xgb", tuned_xgb),
+            ("xgb", tuned_xgb),
             ("lgbm", tuned_lgbm),
             ("cat", tuned_cat)
         ],
@@ -140,19 +159,19 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     )
     stack.fit(X_train, y_train)
 
+    # evaluate all models
     results = []
-    # results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
+    results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
     results.append(evaluate(tuned_lgbm, X_test, y_test, "LightGBM"))
     results.append(evaluate(tuned_cat, X_test, y_test, "CatBoost"))
     results.append(evaluate(stack, X_test, y_test, "StackingEnsemble"))
 
     results_df = pd.DataFrame(results)
-
     best_row = results_df.iloc[results_df["roc_auc"].idxmax()]
     best_model_name = best_row["model"]
 
     best_model = {
-        # "XGBoost": tuned_xgb,
+        "XGBoost": tuned_xgb,
         "LightGBM": tuned_lgbm,
         "CatBoost": tuned_cat,
         "StackingEnsemble": stack
@@ -160,6 +179,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
 
     logger.info(f"Best model: {best_model_name}")
 
+    # save outputs
     os.makedirs(model_output_dir, exist_ok=True)
 
     joblib.dump(best_model, os.path.join(model_output_dir, "best_model.pkl"))

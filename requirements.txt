@@ -5,8 +5,10 @@ dotenv
 
 scikit-learn
 matplotlib
-xgboost
 seaborn
+xgboost
+lightgbm
+catboost
 
 ipykernel
 jupyterlab

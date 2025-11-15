@@ -10,11 +10,11 @@ from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from utils.data_load import load_data
+from utils.logger import get_logger    
 
 warnings.filterwarnings("ignore")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def split_data(df: pd.DataFrame, target_col: str = "is_default"):
@@ -109,18 +109,14 @@ def data_preprocessing_pipeline(input_path: str, output_dir: str):
 
     os.makedirs(output_dir, exist_ok=True)
 
-    X_train_processed.to_csv(os.path.join(output_dir, "X_train_processed.csv"), index=False)
-    X_test_processed.to_csv(os.path.join(output_dir, "X_test_processed.csv"), index=False)
-    y_train.to_csv(os.path.join(output_dir, "y_train.csv"), index=False)
-    y_test.to_csv(os.path.join(output_dir, "y_test.csv"), index=False)
+    X_train_processed.to_parquet(os.path.join(output_dir, "X_train_processed.parquet"), index=False)
+    X_test_processed.to_parquet(os.path.join(output_dir, "X_test_processed.parquet"), index=False)
+    y_train.to_frame(name="is_default").to_parquet(
+    os.path.join(output_dir, "y_train.parquet"), index=False
+    )
+    y_test.to_frame(name="is_default").to_parquet(
+    os.path.join(output_dir, "y_test.parquet"), index=False
+    )
 
     logger.info(f"Preprocessed data saved to: {output_dir}")
     logger.info("Data preprocessing pipeline completed successfully.")
-
-
-if __name__ == "__main__":
-    input_path = os.path.join(os.getcwd(), "data", "feature_engineered", "engineered_data.gzip")
-    output_dir = os.path.join(os.getcwd(), "data", "processed")
-    os.makedirs(output_dir, exist_ok=True)
-
-    data_preprocessing_pipeline(input_path, output_dir)

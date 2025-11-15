@@ -18,7 +18,10 @@ def merge_datasets():
     )
 
     # Save merged dataset
-    merged_data.to_csv(os.path.join("data", 'raw_data' ,"data.gzip"), index=False)
+    output_dir = os.path.join("data", 'raw_data')
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, 'data.parquet')
+    merged_data.to_parquet(output_path, index=False)
     print("Saved data.csv")
     
 merge_datasets()

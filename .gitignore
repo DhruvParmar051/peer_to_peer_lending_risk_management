@@ -1,6 +1,6 @@
+.env
 data
 .venv
 __pycache__
 
 work.ipynb
-models

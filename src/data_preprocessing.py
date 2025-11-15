@@ -10,11 +10,11 @@ from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from utils.data_load import load_data
+from utils.logger import get_logger    
 
 warnings.filterwarnings("ignore")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def split_data(df: pd.DataFrame, target_col: str = "is_default"):

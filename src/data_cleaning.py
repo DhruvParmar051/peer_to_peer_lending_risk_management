@@ -1,16 +1,15 @@
 import os
 import numpy as np
 import pandas as pd
-import logging
 import warnings
 
+from utils.logger import get_logger
 from utils.data_load import load_data
 from utils.hybrid_iqr_capping import hybrid_iqr_capping, evaluate_capping_effect
 
 warnings.filterwarnings("ignore")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 def drop_unnecessary_columns(df: pd.DataFrame) -> pd.DataFrame:
     drop_cols = [
@@ -69,7 +68,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def clean_data_pipeline(input_path, output_dir):
-    logging.info("Starting data cleaning pipeline.")
+    logger.info("Starting data cleaning pipeline.")
 
     # Load dataset
     df = load_data(input_path)
@@ -81,33 +80,40 @@ def clean_data_pipeline(input_path, output_dir):
         "next_pymnt_d", "hardship_flag"
     ]
     df.drop(columns=[c for c in drop_cols if c in df.columns], inplace=True, errors="ignore")
-    logging.info(f"Dropped {len(drop_cols)} unnecessary columns.")
+    logger.info(f"Dropped {len(drop_cols)} unnecessary columns.")
 
     # Standardize data types
-    logging.info("Standardizing data types.")
+    logger.info("Standardizing data types.")
     for col in df.columns:
         if df[col].dtype == "object":
             df[col] = df[col].astype(str).str.strip().replace({"nan": np.nan})
         elif np.issubdtype(df[col].dtype, np.number):
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
+    df.columns = (
+        df.columns
+        .str.replace('[^A-Za-z0-9_]+', '_', regex=True)  
+        .str.replace('_+', '_', regex=True)            
+        .str.strip('_')                                  
+    )
+    
     # Remove duplicates and handle missing values
     before_duplicates = df.shape[0]
     df.drop_duplicates(inplace=True)
-    logging.info(f"Removed {before_duplicates - df.shape[0]} duplicate rows.")
-    logging.info(f"Before handling missing values: {df.shape}")
+    logger.info(f"Removed {before_duplicates - df.shape[0]} duplicate rows.")
+    logger.info(f"Before handling missing values: {df.shape}")
 
     threshold = 0.5
     df.dropna(axis=1, thresh=int((1 - threshold) * len(df)), inplace=True)
 
     num_cols = df.select_dtypes(include=np.number).columns
     df[num_cols] = df[num_cols].fillna(df[num_cols].median())
-    logging.info(f"After handling missing values: {df.shape}")
+    logger.info(f"After handling missing values: {df.shape}")
 
     # Hybrid IQR Outlier Treatment
-    logging.info("Starting Hybrid IQR Outlier Treatment")
+    logger.info("Starting Hybrid IQR Outlier Treatment")
     df_capped, summary_df = hybrid_iqr_capping(df, cols=num_cols, factor=1.5)
-    logging.info("Hybrid IQR capping completed.")
+    logger.info("Hybrid IQR capping completed.")
 
     # Create output directories
     output_files_dir = os.path.join(output_dir)
@@ -116,10 +122,10 @@ def clean_data_pipeline(input_path, output_dir):
     # Save initial capping summary
     summary_path = os.path.join(output_files_dir, "hybrid_capping_summary.csv")
     summary_df.to_csv(summary_path, index=False)
-    logging.info(f"Saved capping summary: {summary_path}")
+    logger.info(f"Saved capping summary: {summary_path}")
 
     # Analyze and drop heavily capped columns
-    logging.info("Analyzing heavily capped columns for removal.")
+    logger.info("Analyzing heavily capped columns for removal.")
     summary_df["mean_shift_ratio"] = (summary_df["mean_after"] - summary_df["mean_before"]).abs() / summary_df["mean_before"].replace(0, 1e-6)
     summary_df["std_reduction_ratio"] = (summary_df["std_before"] - summary_df["std_after"]).abs() / summary_df["std_before"].replace(0, 1e-6)
 
@@ -131,16 +137,16 @@ def clean_data_pipeline(input_path, output_dir):
     drop_cols = sorted(set(heavy_mean_shift).union(set(heavy_std_reduction)))
 
     if drop_cols:
-        logging.info(f"Dropping {len(drop_cols)} heavily capped columns: {drop_cols}")
+        logger.info(f"Dropping {len(drop_cols)} heavily capped columns: {drop_cols}")
         df_capped.drop(columns=[c for c in drop_cols if c in df_capped.columns], inplace=True)
     else:
-        logging.info("No columns met heavy-capping thresholds.")
+        logger.info("No columns met heavy-capping thresholds.")
 
     # Save updated summary and cleaned data
     summary_path_final = os.path.join(output_files_dir, "hybrid_capping_summary_final.csv")
     summary_df.to_csv(summary_path_final, index=False)
-    logging.info(f"Updated capping summary saved: {summary_path_final}")
+    logger.info(f"Updated capping summary saved: {summary_path_final}")
 
     output_path = os.path.join(output_files_dir, "cleaned_data.parquet")
     df_capped.to_parquet(output_path, index=False)
-    logging.info(f"Final cleaned data saved: {output_path}")
+    logger.info(f"Final cleaned data saved: {output_path}")

@@ -6,9 +6,12 @@ dotenv
 scikit-learn
 matplotlib
 seaborn
+xgboost
+lightgbm
+catboost
+
 ipykernel
 jupyterlab
 fredapi
-xgboost
-
 pyarrow
+joblib

@@ -5,31 +5,13 @@ dotenv
 
 scikit-learn
 matplotlib
-xgboost
 seaborn
+xgboost
+lightgbm
+catboost
 
 ipykernel
 jupyterlab
 fredapi
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-xgboost
-
-pyarrow
-=======
-xgboost
->>>>>>> 0546931 (model)
-=======
-xgboost
-
-pyarrow
->>>>>>> 91a139b (pipeline updated)
-=======
-pyarrow
->>>>>>> 1a5cea7 (requirements.txt updated)
-=======
 pyarrow
 joblib
->>>>>>> 9a1af4c (created new logger module)

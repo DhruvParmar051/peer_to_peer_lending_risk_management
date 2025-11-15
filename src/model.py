@@ -1,16 +1,21 @@
 import os
 import numpy as np
 import pandas as pd
-import logging
 import warnings
 import joblib
 
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (
-    classification_report, accuracy_score, precision_score,
-    recall_score, f1_score, roc_auc_score
+    accuracy_score, precision_score, recall_score,
+    f1_score, roc_auc_score, classification_report
 )
+from sklearn.ensemble import StackingClassifier
+from sklearn.linear_model import LogisticRegression
+
 from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
+
 from utils.logger import get_logger
 
 warnings.filterwarnings("ignore")
@@ -18,125 +23,152 @@ logger = get_logger(__name__)
 
 
 def load_processed_data(processed_dir: str):
-    """
-    Load preprocessed train/test data.
-    """
-    logger.info("Loading preprocessed data for model tuning.")
+    """Load train/test processed data"""
     X_train = pd.read_parquet(os.path.join(processed_dir, "X_train_processed.parquet"))
     X_test = pd.read_parquet(os.path.join(processed_dir, "X_test_processed.parquet"))
     y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet")).squeeze()
     y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet")).squeeze()
-
-    logger.info(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
     return X_train, X_test, y_train, y_test
 
 
-def tune_xgboost(X_train, y_train):
-    """
-    Perform hyperparameter tuning using GridSearchCV for XGBoost.
-    """
-    logger.info("Starting XGBoost hyperparameter tuning.")
-
-    xgb = XGBClassifier(
-        objective="binary:logistic",
-        eval_metric="logloss",
-        random_state=42,
-        use_label_encoder=False
-    )
-
-    param_dist = {
-    "n_estimators": [300, 500, 800, 1200],
-    "learning_rate": [0.01, 0.03, 0.05, 0.1],
-    "max_depth": [4, 6, 8, 10],
-    "min_child_weight": [1, 3, 5],
-    "subsample": [0.5, 0.6, 0.7, 0.8, 1.0],
-    "colsample_bytree": [0.5, 0.6, 0.7, 0.8, 1.0],
-    "gamma": [0, 0.1, 0.2, 0.3, 1],
-    "reg_alpha": [0, 0.01, 0.1, 1],
-    "reg_lambda": [1, 1.5, 2, 3]
-    }
-
-    rs = RandomizedSearchCV(
-    estimator=xgb,
-    param_distributions=param_dist,
-    n_iter=20,
-    cv=3,
-    scoring="f1",
-    n_jobs=-1,
-    verbose=2,
-    random_state=42
-    )
-
-
-    rs.fit(X_train, y_train)
-
-    logger.info(f"Best Parameters: {rs.best_params_}")
-    logger.info(f"Best F1 Score (CV): {rs.best_score_:.4f}")
-
-    best_model = rs.best_estimator_
-    return best_model, rs.best_params_, rs.best_score_
-
-
-def evaluate_model(model, X_test, y_test):
-    """
-    Evaluate tuned XGBoost model on test data.
-    """
-    logger.info("Evaluating tuned XGBoost model on test data.")
-
+def evaluate(model, X_test, y_test, name):
+    """Evaluate a trained model"""
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
 
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred)
-    rec = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    auc = roc_auc_score(y_test, y_prob)
-
-    logger.info("Evaluation Results:")
-    logger.info(f"Accuracy:  {acc:.4f}")
-    logger.info(f"Precision: {prec:.4f}")
-    logger.info(f"Recall:    {rec:.4f}")
-    logger.info(f"F1-Score:  {f1:.4f}")
-    logger.info(f"ROC-AUC:   {auc:.4f}")
-    logger.info("\n" + classification_report(y_test, y_pred))
-
     metrics = {
-        "accuracy": acc,
-        "precision": prec,
-        "recall": rec,
-        "f1": f1,
-        "roc_auc": auc
+        "model": name,
+        "accuracy": accuracy_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+        "recall": recall_score(y_test, y_pred),
+        "f1": f1_score(y_test, y_pred),
+        "roc_auc": roc_auc_score(y_test, y_prob)
     }
 
+    logger.info(f"{name}: AUC={metrics['roc_auc']:.4f}, F1={metrics['f1']:.4f}")
     return metrics
 
 
-def model_tuning_pipeline(processed_dir: str, model_output_dir: str):
-    """
-    Complete pipeline for XGBoost model tuning:
-    1. Load processed data
-    2. Tune hyperparameters
-    3. Evaluate tuned model
-    4. Save tuned model and results
-    """
-    logger.info("Starting XGBoost model tuning pipeline.")
+def tune_with_random_search(model, params, X_train, y_train, name):
+    """Tune model using RandomizedSearchCV"""
+    logger.info(f"Tuning {name}...")
+
+    rs = RandomizedSearchCV(
+        estimator=model,
+        param_distributions=params,
+        n_iter=15,
+        cv=3,
+        scoring="f1",
+        n_jobs=-1,
+        verbose=1,
+        random_state=42
+    )
+    rs.fit(X_train, y_train)
+
+    logger.info(f"{name} best params: {rs.best_params_}")
+    return rs.best_estimator_
+
+
+# Parameter grids
+
+xgb_param_dist = {
+    "n_estimators": [300, 500, 800, 1200],
+    "learning_rate": [0.01, 0.03, 0.05, 0.1],
+    "max_depth": [4, 6, 8, 10],
+    "min_child_weight": [1, 3, 5, 7],
+    "subsample": [0.6, 0.7, 0.8, 1.0],
+    "colsample_bytree": [0.5, 0.6, 0.7, 0.8],
+    "gamma": [0, 0.1, 0.2, 0.3],
+    "reg_alpha": [0, 0.01, 0.1, 1],
+    "reg_lambda": [1, 1.5, 2, 3]
+}
+
+lgbm_param_dist = {
+    "n_estimators": [300, 500, 800],
+    "learning_rate": [0.01, 0.03, 0.05],
+    "max_depth": [-1, 4, 6, 8],
+    "num_leaves": [31, 50, 80, 120],
+    "min_child_samples": [20, 50, 100],
+    "subsample": [0.6, 0.7, 0.8, 1.0],
+    "colsample_bytree": [0.6, 0.7, 0.8, 1.0],
+    "reg_alpha": [0, 0.01, 0.1, 1],
+    "reg_lambda": [1, 2, 3]
+}
+
+cat_param_dist = {
+    "iterations": [300, 500, 800],
+    "depth": [4, 6, 8, 10],
+    "learning_rate": [0.01, 0.03, 0.05],
+    "l2_leaf_reg": [1, 3, 5, 7],
+    "border_count": [32, 64, 128]
+}
+
+
+def model_pipeline(processed_dir: str, model_output_dir: str):
+    """Train, tune, ensemble, evaluate and save best model"""
+    logger.info("Model pipeline started")
 
     X_train, X_test, y_train, y_test = load_processed_data(processed_dir)
-    tuned_model, best_params, best_cv_f1 = tune_xgboost(X_train, y_train)
-    metrics = evaluate_model(tuned_model, X_test, y_test)
+
+    tuned_xgb = tune_with_random_search(
+        XGBClassifier(objective="binary:logistic", eval_metric="logloss", random_state=42),
+        xgb_param_dist, X_train, y_train, "XGBoost"
+    )
+
+    tuned_lgbm = tune_with_random_search(
+        LGBMClassifier(random_state=42),
+        lgbm_param_dist, X_train, y_train, "LightGBM"
+    )
+
+    tuned_cat = tune_with_random_search(
+        CatBoostClassifier(verbose=0, random_state=42),
+        cat_param_dist, X_train, y_train, "CatBoost"
+    )
+
+    logger.info("Training stacking ensemble")
+
+    stack = StackingClassifier(
+        estimators=[
+            ("xgb", tuned_xgb),
+            ("lgbm", tuned_lgbm),
+            ("cat", tuned_cat)
+        ],
+        final_estimator=LogisticRegression(max_iter=500),
+        stack_method="auto",
+        n_jobs=-1
+    )
+    stack.fit(X_train, y_train)
+
+    results = []
+    results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
+    results.append(evaluate(tuned_lgbm, X_test, y_test, "LightGBM"))
+    results.append(evaluate(tuned_cat, X_test, y_test, "CatBoost"))
+    results.append(evaluate(stack, X_test, y_test, "StackingEnsemble"))
+
+    results_df = pd.DataFrame(results)
+
+    best_row = results_df.iloc[results_df["roc_auc"].idxmax()]
+    best_model_name = best_row["model"]
+
+    best_model = {
+        "XGBoost": tuned_xgb,
+        "LightGBM": tuned_lgbm,
+        "CatBoost": tuned_cat,
+        "StackingEnsemble": stack
+    }[best_model_name]
+
+    logger.info(f"Best model: {best_model_name}")
 
     os.makedirs(model_output_dir, exist_ok=True)
-    model_path = os.path.join(model_output_dir, "xgboost_tuned.pkl")
-    joblib.dump(tuned_model, model_path)
 
-    logger.info(f"Tuned XGBoost model saved at: {model_path}")
+    joblib.dump(best_model, os.path.join(model_output_dir, "best_model.pkl"))
+    results_df.to_csv(os.path.join(model_output_dir, "model_comparison.csv"), index=False)
 
-    # Save metrics and parameters
-    results = {**metrics, **best_params, "cv_f1": best_cv_f1}
-    results_path = os.path.join(model_output_dir, "xgboost_tuning_results.csv")
-    pd.DataFrame([results]).to_csv(results_path, index=False)
+    preds = pd.DataFrame({
+        "y_true": y_test,
+        "y_pred": best_model.predict(X_test),
+        "y_prob": best_model.predict_proba(X_test)[:, 1]
+    })
+    preds.to_parquet(os.path.join(model_output_dir, "predictions.parquet"), index=False)
 
-    logger.info(f"Model tuning results saved to: {results_path}")
-    logger.info("XGBoost model tuning pipeline completed successfully.")
-
-
+    logger.info("Model pipeline completed")

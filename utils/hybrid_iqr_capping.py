@@ -1,23 +1,22 @@
 import numpy as np
 import pandas as pd
-import logging
 
-logging.basicConfig(
-    level=logging.INFO, 
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+from utils.logger import get_logger   
+ 
+logger = get_logger(__name__)
+
 
 def hybrid_iqr_capping(df: pd.DataFrame, cols: list, factor: float = 1.5):
     """
     Caps extreme values using IQR bounds instead of removing rows.
     Returns both the capped DataFrame and a capping summary.
     """
-    logging.info(f"Columns: {len(cols)} | Factor: {factor}")
+    logger.info(f"Columns: {len(cols)} | Factor: {factor}")
 
     df_before = df.copy()
     for col in cols:
         if col not in df.columns or df[col].dtype.kind not in "bifc":
-            logging.warning(f"Skipping non-numeric or missing column: {col}")
+            logger.warning(f"Skipping non-numeric or missing column: {col}")
             continue
 
         Q1 = df[col].quantile(0.25)
@@ -31,10 +30,10 @@ def hybrid_iqr_capping(df: pd.DataFrame, cols: list, factor: float = 1.5):
         num_capped = (df[col] != capped).sum()
         df[col] = capped
 
-        logging.info(f"{col}: capped {num_capped} values [{lower:.2f}, {upper:.2f}]")
+        logger.info(f"{col}: capped {num_capped} values [{lower:.2f}, {upper:.2f}]")
 
     summary_df = evaluate_capping_effect(df_before, df, cols)
-    logging.info("Hybrid IQR capping completed (no rows removed).")
+    logger.info("Hybrid IQR capping completed (no rows removed).")
     return df, summary_df
 
 
@@ -61,5 +60,5 @@ def evaluate_capping_effect(df_before: pd.DataFrame, df_after: pd.DataFrame, col
         })
     
     summary_df = pd.DataFrame(summary)
-    logging.info("Capping evaluation summary generated.")
+    logger.info("Capping evaluation summary generated.")
     return summary_df

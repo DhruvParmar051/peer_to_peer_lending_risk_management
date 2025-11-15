@@ -86,14 +86,15 @@ xgb_param_dist = {
 lgbm_param_dist = {
     "n_estimators": [300, 500, 800],
     "learning_rate": [0.01, 0.03, 0.05],
-    "max_depth": [-1, 4, 6, 8],
-    "num_leaves": [31, 50, 80, 120],
-    "min_child_samples": [20, 50, 100],
-    "subsample": [0.6, 0.7, 0.8, 1.0],
-    "colsample_bytree": [0.6, 0.7, 0.8, 1.0],
-    "reg_alpha": [0, 0.01, 0.1, 1],
+    "num_leaves": [15, 31, 50],
+    "max_depth": [3, 4, 5, -1],
+    "min_child_samples": [100, 200, 300],
+    "subsample": [0.6, 0.8, 1.0],
+    "colsample_bytree": [0.6, 0.8, 1.0],
+    "reg_alpha": [0, 0.1, 0.3],
     "reg_lambda": [1, 2, 3]
 }
+
 
 cat_param_dist = {
     "iterations": [300, 500, 800],
@@ -110,13 +111,13 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
 
     X_train, X_test, y_train, y_test = load_processed_data(processed_dir)
 
-    tuned_xgb = tune_with_random_search(
-        XGBClassifier(objective="binary:logistic", eval_metric="logloss", random_state=42),
-        xgb_param_dist, X_train, y_train, "XGBoost"
-    )
+    # tuned_xgb = tune_with_random_search(
+    #     XGBClassifier(objective="binary:logistic", eval_metric="logloss", random_state=42),
+    #     xgb_param_dist, X_train, y_train, "XGBoost"
+    # )
 
-    tuned_lgbm = tune_with_random_search(
-        LGBMClassifier(random_state=42),
+    tuned_lgbm = tune_with_random_search( 
+        LGBMClassifier(random_state=42, force_col_wise=True,  min_split_gain=0.001,n_jobs=-1, verbose=-1),
         lgbm_param_dist, X_train, y_train, "LightGBM"
     )
 
@@ -129,7 +130,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
 
     stack = StackingClassifier(
         estimators=[
-            ("xgb", tuned_xgb),
+            # ("xgb", tuned_xgb),
             ("lgbm", tuned_lgbm),
             ("cat", tuned_cat)
         ],
@@ -140,7 +141,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     stack.fit(X_train, y_train)
 
     results = []
-    results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
+    # results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
     results.append(evaluate(tuned_lgbm, X_test, y_test, "LightGBM"))
     results.append(evaluate(tuned_cat, X_test, y_test, "CatBoost"))
     results.append(evaluate(stack, X_test, y_test, "StackingEnsemble"))
@@ -151,7 +152,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     best_model_name = best_row["model"]
 
     best_model = {
-        "XGBoost": tuned_xgb,
+        # "XGBoost": tuned_xgb,
         "LightGBM": tuned_lgbm,
         "CatBoost": tuned_cat,
         "StackingEnsemble": stack

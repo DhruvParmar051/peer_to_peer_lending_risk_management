@@ -144,27 +144,11 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
         ),
         cat_param_dist, X_train, y_train, "CatBoost"
     )
-
-    # stacking model
-    logger.info("Training stacking ensemble")
-    stack = StackingClassifier(
-        estimators=[
-            ("xgb", tuned_xgb),
-            ("lgbm", tuned_lgbm),
-            ("cat", tuned_cat)
-        ],
-        final_estimator=LogisticRegression(max_iter=500),
-        stack_method="auto",
-        n_jobs=-1
-    )
-    stack.fit(X_train, y_train)
-
     # evaluate all models
     results = []
     results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
     results.append(evaluate(tuned_lgbm, X_test, y_test, "LightGBM"))
     results.append(evaluate(tuned_cat, X_test, y_test, "CatBoost"))
-    results.append(evaluate(stack, X_test, y_test, "StackingEnsemble"))
 
     results_df = pd.DataFrame(results)
     best_row = results_df.iloc[results_df["roc_auc"].idxmax()]
@@ -174,7 +158,6 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
         "XGBoost": tuned_xgb,
         "LightGBM": tuned_lgbm,
         "CatBoost": tuned_cat,
-        "StackingEnsemble": stack
     }[best_model_name]
 
     logger.info(f"Best model: {best_model_name}")

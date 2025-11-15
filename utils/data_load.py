@@ -37,6 +37,7 @@ def load_data(file_path: str) -> pd.DataFrame:
         
     df = pd.read_parquet(file_path)
     logger.info(f"Loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns")
+<<<<<<< HEAD
     return df
 =======
 =======
@@ -51,3 +52,6 @@ def load_data(file_path: str) -> pd.DataFrame:
     return df
 
 >>>>>>> 81b372d (data cleaning created)
+=======
+    return df
+>>>>>>> 3ea0aba (logs created)

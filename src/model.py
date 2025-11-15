@@ -135,5 +135,3 @@ def model_tuning_pipeline(processed_dir: str, model_output_dir: str):
 
     logger.info(f"Model tuning results saved to: {results_path}")
     logger.info("XGBoost model tuning pipeline completed successfully.")
-
-

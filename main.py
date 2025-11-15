@@ -107,7 +107,11 @@ def main():
 
 if __name__ == "__main__":
 <<<<<<< HEAD
+<<<<<<< HEAD
     main()
 =======
     main()
 >>>>>>> 8f92a09 (pipeline created)
+=======
+    main()
+>>>>>>> 3ea0aba (logs created)

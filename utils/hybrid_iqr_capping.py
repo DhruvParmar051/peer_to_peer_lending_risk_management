@@ -114,6 +114,7 @@ def evaluate_capping_effect(df_before: pd.DataFrame, df_after: pd.DataFrame, col
 <<<<<<< HEAD
 <<<<<<< HEAD
     logger.info("Capping evaluation summary generated.")
+<<<<<<< HEAD
 =======
     logging.info("Capping evaluation summary generated.")
 >>>>>>> 81b372d (data cleaning created)
@@ -121,3 +122,6 @@ def evaluate_capping_effect(df_before: pd.DataFrame, df_after: pd.DataFrame, col
     logger.info("Capping evaluation summary generated.")
 >>>>>>> 9a1af4c (created new logger module)
     return summary_df
+=======
+    return summary_df
+>>>>>>> 3ea0aba (logs created)

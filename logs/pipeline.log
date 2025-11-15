@@ -5,3 +5,154 @@
 2025-11-14 18:09:34,906 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 145 columns
 2025-11-14 18:09:37,662 - INFO - src.data_cleaning - Dropped 12 unnecessary columns.
 2025-11-14 18:09:37,665 - INFO - src.data_cleaning - Standardizing data types.
+2025-11-15 10:25:52,792 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-15 10:25:52,792 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-15 10:25:52,792 - INFO - src.data_cleaning - Starting data cleaning pipeline.
+2025-11-15 10:25:52,792 - INFO - utils.data_load - Loading dataset from /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/raw_data/data.parquet
+2025-11-15 10:25:55,603 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 145 columns
+2025-11-15 10:25:57,180 - INFO - src.data_cleaning - Dropped 12 unnecessary columns.
+2025-11-15 10:25:57,181 - INFO - src.data_cleaning - Standardizing data types.
+2025-11-15 10:26:16,315 - INFO - src.data_cleaning - Removed 0 duplicate rows.
+2025-11-15 10:26:16,318 - INFO - src.data_cleaning - Before handling missing values: (2925493, 135)
+2025-11-15 10:26:23,538 - INFO - src.data_cleaning - After handling missing values: (2925493, 108)
+2025-11-15 10:26:23,539 - INFO - src.data_cleaning - Starting Hybrid IQR Outlier Treatment
+2025-11-15 10:26:23,539 - INFO - utils.hybrid_iqr_capping - Columns: 81 | Factor: 1.5
+2025-11-15 10:26:24,985 - INFO - utils.hybrid_iqr_capping - Unnamed: 0: capped 218776 values [-78838.50, 218973.50]
+2025-11-15 10:26:25,035 - INFO - utils.hybrid_iqr_capping - loan_amnt: capped 70113 values [-10000.00, 38000.00]
+2025-11-15 10:26:25,084 - INFO - utils.hybrid_iqr_capping - funded_amnt: capped 70113 values [-10000.00, 38000.00]
+2025-11-15 10:26:25,132 - INFO - utils.hybrid_iqr_capping - funded_amnt_inv: capped 70108 values [-10000.00, 38000.00]
+2025-11-15 10:26:25,174 - INFO - utils.hybrid_iqr_capping - installment: capped 85066 values [-272.13, 1129.55]
+2025-11-15 10:26:25,221 - INFO - utils.hybrid_iqr_capping - annual_inc: capped 148097 values [-25000.00, 167000.00]
+2025-11-15 10:26:25,266 - INFO - utils.hybrid_iqr_capping - dti: capped 37743 values [-7.08, 44.04]
+2025-11-15 10:26:25,291 - INFO - utils.hybrid_iqr_capping - delinq_2yrs: capped 518498 values [0.00, 0.00]
+2025-11-15 10:26:25,337 - INFO - utils.hybrid_iqr_capping - fico_range_low: capped 70995 values [607.50, 787.50]
+2025-11-15 10:26:25,383 - INFO - utils.hybrid_iqr_capping - fico_range_high: capped 70995 values [611.50, 791.50]
+2025-11-15 10:26:25,414 - INFO - utils.hybrid_iqr_capping - inq_last_6mths: capped 110109 values [-1.50, 2.50]
+2025-11-15 10:26:25,460 - INFO - utils.hybrid_iqr_capping - open_acc: capped 75983 values [-2.50, 25.50]
+2025-11-15 10:26:25,484 - INFO - utils.hybrid_iqr_capping - pub_rec: capped 426173 values [0.00, 0.00]
+2025-11-15 10:26:25,533 - INFO - utils.hybrid_iqr_capping - revol_bal: capped 180330 values [-15983.50, 42620.50]
+2025-11-15 10:26:25,584 - INFO - utils.hybrid_iqr_capping - total_acc: capped 52577 values [-9.00, 55.00]
+2025-11-15 10:26:25,615 - INFO - utils.hybrid_iqr_capping - out_prncp: capped 347207 values [-8009.27, 13348.78]
+2025-11-15 10:26:25,642 - INFO - utils.hybrid_iqr_capping - out_prncp_inv: capped 347237 values [-8007.08, 13345.12]
+2025-11-15 10:26:25,692 - INFO - utils.hybrid_iqr_capping - total_pymnt: capped 111468 values [-14500.93, 36863.73]
+2025-11-15 10:26:25,740 - INFO - utils.hybrid_iqr_capping - total_pymnt_inv: capped 111634 values [-14502.51, 36835.86]
+2025-11-15 10:26:25,788 - INFO - utils.hybrid_iqr_capping - total_rec_prncp: capped 93419 values [-13920.42, 31605.07]
+2025-11-15 10:26:25,831 - INFO - utils.hybrid_iqr_capping - total_rec_int: capped 210833 values [-2963.50, 6880.15]
+2025-11-15 10:26:25,851 - INFO - utils.hybrid_iqr_capping - total_rec_late_fee: capped 121909 values [0.00, 0.00]
+2025-11-15 10:26:25,873 - INFO - utils.hybrid_iqr_capping - recoveries: capped 265249 values [0.00, 0.00]
+2025-11-15 10:26:25,895 - INFO - utils.hybrid_iqr_capping - collection_recovery_fee: capped 256812 values [0.00, 0.00]
+2025-11-15 10:26:25,941 - INFO - utils.hybrid_iqr_capping - last_pymnt_amnt: capped 389526 values [-5211.70, 9390.86]
+2025-11-15 10:26:25,986 - INFO - utils.hybrid_iqr_capping - last_fico_range_high: capped 115969 values [526.50, 866.50]
+2025-11-15 10:26:26,028 - INFO - utils.hybrid_iqr_capping - last_fico_range_low: capped 115969 values [522.50, 862.50]
+2025-11-15 10:26:26,047 - INFO - utils.hybrid_iqr_capping - collections_12_mths_ex_med: capped 47388 values [0.00, 0.00]
+2025-11-15 10:26:26,065 - INFO - utils.hybrid_iqr_capping - acc_now_delinq: capped 8854 values [0.00, 0.00]
+2025-11-15 10:26:26,088 - INFO - utils.hybrid_iqr_capping - tot_coll_amt: capped 420152 values [0.00, 0.00]
+2025-11-15 10:26:26,136 - INFO - utils.hybrid_iqr_capping - tot_cur_bal: capped 109771 values [-244813.00, 488763.00]
+2025-11-15 10:26:26,173 - INFO - utils.hybrid_iqr_capping - open_acc_6m: capped 188927 values [-1.50, 2.50]
+2025-11-15 10:26:26,213 - INFO - utils.hybrid_iqr_capping - open_act_il: capped 172460 values [-2.00, 6.00]
+2025-11-15 10:26:26,243 - INFO - utils.hybrid_iqr_capping - open_il_12m: capped 100501 values [-1.50, 2.50]
+2025-11-15 10:26:26,279 - INFO - utils.hybrid_iqr_capping - open_il_24m: capped 222522 values [-0.50, 3.50]
+2025-11-15 10:26:26,320 - INFO - utils.hybrid_iqr_capping - mths_since_rcnt_il: capped 357294 values [-3.00, 29.00]
+2025-11-15 10:26:26,361 - INFO - utils.hybrid_iqr_capping - total_bal_il: capped 318452 values [-15555.50, 66000.50]
+2025-11-15 10:26:26,403 - INFO - utils.hybrid_iqr_capping - il_util: capped 733023 values [53.50, 89.50]
+2025-11-15 10:26:26,442 - INFO - utils.hybrid_iqr_capping - open_rv_12m: capped 325244 values [-1.50, 2.50]
+2025-11-15 10:26:26,481 - INFO - utils.hybrid_iqr_capping - open_rv_24m: capped 155081 values [-2.00, 6.00]
+2025-11-15 10:26:26,523 - INFO - utils.hybrid_iqr_capping - max_bal_bc: capped 298549 values [-1209.00, 10615.00]
+2025-11-15 10:26:26,563 - INFO - utils.hybrid_iqr_capping - all_util: capped 241256 values [25.00, 89.00]
+2025-11-15 10:26:26,611 - INFO - utils.hybrid_iqr_capping - total_rev_hi_lim: capped 173544 values [-28455.00, 89025.00]
+2025-11-15 10:26:26,648 - INFO - utils.hybrid_iqr_capping - inq_fi: capped 267832 values [-1.50, 2.50]
+2025-11-15 10:26:26,681 - INFO - utils.hybrid_iqr_capping - total_cu_tl: capped 418671 values [-1.50, 2.50]
+2025-11-15 10:26:26,719 - INFO - utils.hybrid_iqr_capping - inq_last_12m: capped 381810 values [-0.50, 3.50]
+2025-11-15 10:26:26,767 - INFO - utils.hybrid_iqr_capping - acc_open_past_24mths: capped 62689 values [-4.00, 12.00]
+2025-11-15 10:26:26,815 - INFO - utils.hybrid_iqr_capping - avg_cur_bal: capped 164992 values [-19974.50, 41765.50]
+2025-11-15 10:26:26,857 - INFO - utils.hybrid_iqr_capping - bc_open_to_buy: capped 238185 values [-18299.00, 36053.00]
+2025-11-15 10:26:26,900 - INFO - utils.hybrid_iqr_capping - bc_util: capped 102 values [-36.90, 151.10]
+2025-11-15 10:26:26,918 - INFO - utils.hybrid_iqr_capping - chargeoff_within_12_mths: capped 21067 values [0.00, 0.00]
+2025-11-15 10:26:26,935 - INFO - utils.hybrid_iqr_capping - delinq_amnt: capped 7327 values [0.00, 0.00]
+2025-11-15 10:26:26,982 - INFO - utils.hybrid_iqr_capping - mo_sin_old_il_acct: capped 114952 values [13.00, 237.00]
+2025-11-15 10:26:27,032 - INFO - utils.hybrid_iqr_capping - mo_sin_old_rev_tl_op: capped 91899 values [-57.00, 399.00]
+2025-11-15 10:26:27,077 - INFO - utils.hybrid_iqr_capping - mo_sin_rcnt_rev_tl_op: capped 206774 values [-17.00, 39.00]
+2025-11-15 10:26:27,123 - INFO - utils.hybrid_iqr_capping - mo_sin_rcnt_tl: capped 203825 values [-7.50, 20.50]
+2025-11-15 10:26:27,164 - INFO - utils.hybrid_iqr_capping - mort_acc: capped 113712 values [-3.00, 5.00]
+2025-11-15 10:26:27,208 - INFO - utils.hybrid_iqr_capping - mths_since_recent_bc: capped 238910 values [-30.00, 66.00]
+2025-11-15 10:26:27,252 - INFO - utils.hybrid_iqr_capping - mths_since_recent_inq: capped 92995 values [-7.50, 20.50]
+2025-11-15 10:26:27,280 - INFO - utils.hybrid_iqr_capping - num_accts_ever_120_pd: capped 633225 values [0.00, 0.00]
+2025-11-15 10:26:27,322 - INFO - utils.hybrid_iqr_capping - num_actv_bc_tl: capped 73162 values [-2.50, 9.50]
+2025-11-15 10:26:27,366 - INFO - utils.hybrid_iqr_capping - num_actv_rev_tl: capped 87144 values [-3.00, 13.00]
+2025-11-15 10:26:27,419 - INFO - utils.hybrid_iqr_capping - num_bc_sats: capped 150384 values [-1.50, 10.50]
+2025-11-15 10:26:27,468 - INFO - utils.hybrid_iqr_capping - num_bc_tl: capped 66092 values [-5.00, 19.00]
+2025-11-15 10:26:27,509 - INFO - utils.hybrid_iqr_capping - num_il_tl: capped 174943 values [-6.50, 21.50]
+2025-11-15 10:26:27,554 - INFO - utils.hybrid_iqr_capping - num_op_rev_tl: capped 133699 values [-2.50, 17.50]
+2025-11-15 10:26:27,600 - INFO - utils.hybrid_iqr_capping - num_rev_accts: capped 73181 values [-7.00, 33.00]
+2025-11-15 10:26:27,644 - INFO - utils.hybrid_iqr_capping - num_rev_tl_bal_gt_0: capped 80556 values [-3.00, 13.00]
+2025-11-15 10:26:27,686 - INFO - utils.hybrid_iqr_capping - num_sats: capped 114734 values [-1.00, 23.00]
+2025-11-15 10:26:27,703 - INFO - utils.hybrid_iqr_capping - num_tl_120dpd_2m: capped 1285 values [0.00, 0.00]
+2025-11-15 10:26:27,719 - INFO - utils.hybrid_iqr_capping - num_tl_30dpd: capped 5872 values [0.00, 0.00]
+2025-11-15 10:26:27,738 - INFO - utils.hybrid_iqr_capping - num_tl_90g_dpd_24m: capped 142115 values [0.00, 0.00]
+2025-11-15 10:26:27,778 - INFO - utils.hybrid_iqr_capping - num_tl_op_past_12m: capped 74267 values [-2.00, 6.00]
+2025-11-15 10:26:27,814 - INFO - utils.hybrid_iqr_capping - pct_tl_nvr_dlq: capped 212766 values [80.00, 112.00]
+2025-11-15 10:26:27,858 - INFO - utils.hybrid_iqr_capping - percent_bc_gt_75: capped 0 values [-100.05, 166.75]
+2025-11-15 10:26:27,880 - INFO - utils.hybrid_iqr_capping - pub_rec_bankruptcies: capped 340161 values [0.00, 0.00]
+2025-11-15 10:26:27,899 - INFO - utils.hybrid_iqr_capping - tax_liens: capped 64630 values [0.00, 0.00]
+2025-11-15 10:26:27,951 - INFO - utils.hybrid_iqr_capping - tot_hi_cred_lim: capped 106899 values [-256570.00, 570550.00]
+2025-11-15 10:26:27,995 - INFO - utils.hybrid_iqr_capping - total_bal_ex_mort: capped 178703 values [-44531.50, 131896.50]
+2025-11-15 10:26:28,049 - INFO - utils.hybrid_iqr_capping - total_bc_limit: capped 173143 values [-25650.00, 66750.00]
+2025-11-15 10:26:28,093 - INFO - utils.hybrid_iqr_capping - total_il_high_credit_limit: capped 155021 values [-50093.00, 126155.00]
+2025-11-15 10:26:33,598 - INFO - utils.hybrid_iqr_capping - Capping evaluation summary generated.
+2025-11-15 10:26:33,598 - INFO - utils.hybrid_iqr_capping - Hybrid IQR capping completed (no rows removed).
+2025-11-15 10:26:33,854 - INFO - src.data_cleaning - Hybrid IQR capping completed.
+2025-11-15 10:26:33,857 - INFO - src.data_cleaning - Saved capping summary: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/cleaned_data/hybrid_capping_summary.csv
+2025-11-15 10:26:33,857 - INFO - src.data_cleaning - Analyzing heavily capped columns for removal.
+2025-11-15 10:26:33,858 - INFO - src.data_cleaning - Dropping 21 heavily capped columns: ['acc_now_delinq', 'annual_inc', 'chargeoff_within_12_mths', 'collection_recovery_fee', 'collections_12_mths_ex_med', 'delinq_2yrs', 'delinq_amnt', 'last_pymnt_amnt', 'mths_since_rcnt_il', 'num_accts_ever_120_pd', 'num_tl_120dpd_2m', 'num_tl_30dpd', 'num_tl_90g_dpd_24m', 'pub_rec', 'pub_rec_bankruptcies', 'recoveries', 'tax_liens', 'tot_coll_amt', 'total_bal_il', 'total_cu_tl', 'total_rec_late_fee']
+2025-11-15 10:26:34,572 - INFO - src.data_cleaning - Updated capping summary saved: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/cleaned_data/hybrid_capping_summary_final.csv
+2025-11-15 10:26:38,321 - INFO - src.data_cleaning - Final cleaned data saved: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/cleaned_data/cleaned_data.parquet
+2025-11-15 10:26:38,528 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-15 10:26:38,528 - INFO - src.data_feature_engineering - Starting feature engineering pipeline.
+2025-11-15 10:26:38,528 - INFO - utils.data_load - Loading dataset from /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/cleaned_data/cleaned_data.parquet
+2025-11-15 10:26:39,198 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 87 columns
+2025-11-15 10:26:39,198 - INFO - src.data_feature_engineering - Data loaded successfully: (2925493, 87)
+2025-11-15 10:26:39,198 - INFO - src.data_feature_engineering - Creating target variable 'is_default'.
+2025-11-15 10:26:40,125 - INFO - src.data_feature_engineering - Target column created. Data shape after filtering: (1860764, 87)
+2025-11-15 10:26:40,223 - INFO - src.data_feature_engineering - Applying PCA to numeric features.
+2025-11-15 10:26:41,142 - INFO - src.data_feature_engineering - PCA applied. Retained 31 components explaining 95.0% variance.
+2025-11-15 10:26:42,905 - INFO - src.data_feature_engineering - Feature engineered data saved to: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/feature_engineered/engineered_data.parquet
+2025-11-15 10:26:42,905 - INFO - src.data_feature_engineering - Feature engineering pipeline completed successfully.
+2025-11-15 10:26:43,011 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-15 10:26:43,011 - INFO - src.data_preprocessing - Starting data preprocessing pipeline.
+2025-11-15 10:26:43,012 - INFO - utils.data_load - Loading dataset from /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/feature_engineered/engineered_data.parquet
+2025-11-15 10:26:43,534 - INFO - utils.data_load - Loaded dataset: 1860764 rows, 58 columns
+2025-11-15 10:26:43,534 - INFO - src.data_preprocessing - Data loaded: (1860764, 58)
+2025-11-15 10:26:43,534 - INFO - src.data_preprocessing - Splitting data into train and test sets.
+2025-11-15 10:26:44,416 - INFO - src.data_preprocessing - Train shape: (1488611, 57), Test shape: (372153, 57)
+2025-11-15 10:26:44,467 - INFO - src.data_preprocessing - Starting preprocessing of features.
+2025-11-15 10:26:56,039 - INFO - src.data_preprocessing - Preprocessing complete.
+2025-11-15 10:26:57,831 - INFO - src.data_preprocessing - Preprocessed data saved to: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/data/processed
+2025-11-15 10:26:57,831 - INFO - src.data_preprocessing - Data preprocessing pipeline completed successfully.
+2025-11-15 10:26:58,085 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-15 10:26:58,085 - INFO - src.model - Starting XGBoost model tuning pipeline.
+2025-11-15 10:26:58,085 - INFO - src.model - Loading preprocessed data for model tuning.
+2025-11-15 10:26:58,483 - INFO - src.model - Train shape: (1488611, 84), Test shape: (372153, 84)
+2025-11-15 10:26:58,483 - INFO - src.model - Starting XGBoost hyperparameter tuning.
+2025-11-15 10:53:35,055 - INFO - src.model - Best Parameters: {'subsample': 0.8, 'reg_lambda': 3, 'reg_alpha': 0.1, 'n_estimators': 1200, 'min_child_weight': 5, 'max_depth': 6, 'learning_rate': 0.1, 'gamma': 0.1, 'colsample_bytree': 0.8}
+2025-11-15 10:53:35,056 - INFO - src.model - Best F1 Score (CV): 0.9165
+2025-11-15 10:53:35,056 - INFO - src.model - Evaluating tuned XGBoost model on test data.
+2025-11-15 10:53:37,061 - INFO - src.model - Evaluation Results:
+2025-11-15 10:53:37,061 - INFO - src.model - Accuracy:  0.9688
+2025-11-15 10:53:37,061 - INFO - src.model - Precision: 0.9366
+2025-11-15 10:53:37,061 - INFO - src.model - Recall:    0.9011
+2025-11-15 10:53:37,061 - INFO - src.model - F1-Score:  0.9185
+2025-11-15 10:53:37,061 - INFO - src.model - ROC-AUC:   0.9914
+2025-11-15 10:53:37,120 - INFO - src.model - 
+              precision    recall  f1-score   support
+
+           0       0.98      0.99      0.98    299557
+           1       0.94      0.90      0.92     72596
+
+    accuracy                           0.97    372153
+   macro avg       0.96      0.94      0.95    372153
+weighted avg       0.97      0.97      0.97    372153
+
+2025-11-15 10:53:37,128 - INFO - src.model - Tuned XGBoost model saved at: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/models/xgboost_tuned.pkl
+2025-11-15 10:53:37,142 - INFO - src.model - Model tuning results saved to: /Users/falak/Documents/Falak/College/DS605 - FoML/p2p_lending/models/xgboost_tuning_results.csv
+2025-11-15 10:53:37,142 - INFO - src.model - XGBoost model tuning pipeline completed successfully.
+2025-11-15 10:53:37,163 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====

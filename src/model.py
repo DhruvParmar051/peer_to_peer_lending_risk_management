@@ -45,12 +45,15 @@ def tune_xgboost(X_train, y_train):
     )
 
     param_dist = {
-        "n_estimators": [300, 500,250],
-        "learning_rate": np.linspace(0.03, 0.15, 5),
-        "max_depth": [4, 6, 8,10],
-        "subsample": [0.7, 0.8, 1],
-        "colsample_bytree": [0.7, 0.8,1.0],
-        "gamma": [0.1, 0.2,0.3]
+    "n_estimators": [300, 500, 800, 1200],
+    "learning_rate": [0.01, 0.03, 0.05, 0.1],
+    "max_depth": [4, 6, 8, 10],
+    "min_child_weight": [1, 3, 5],
+    "subsample": [0.5, 0.6, 0.7, 0.8, 1.0],
+    "colsample_bytree": [0.5, 0.6, 0.7, 0.8, 1.0],
+    "gamma": [0, 0.1, 0.2, 0.3, 1],
+    "reg_alpha": [0, 0.01, 0.1, 1],
+    "reg_lambda": [1, 1.5, 2, 3]
     }
 
     rs = RandomizedSearchCV(

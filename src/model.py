@@ -56,11 +56,11 @@ def tune_with_random_search(model, params, X_train, y_train, name):
     rs = RandomizedSearchCV(
         estimator=model,
         param_distributions=params,
-        n_iter=15,
-        cv=3,
+        n_iter=10,
+        cv=2,
         scoring="f1",
         n_jobs=-1,
-        verbose=1,
+        verbose=2,
         random_state=42
     )
     rs.fit(X_train, y_train)

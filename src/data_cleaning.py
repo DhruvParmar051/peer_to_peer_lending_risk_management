@@ -90,6 +90,13 @@ def clean_data_pipeline(input_path, output_dir):
         elif np.issubdtype(df[col].dtype, np.number):
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
+    df.columns = (
+        df.columns
+        .str.replace('[^A-Za-z0-9_]+', '_', regex=True)  
+        .str.replace('_+', '_', regex=True)            
+        .str.strip('_')                                  
+    )
+    
     # Remove duplicates and handle missing values
     before_duplicates = df.shape[0]
     df.drop_duplicates(inplace=True)

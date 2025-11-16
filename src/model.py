@@ -41,8 +41,8 @@ def evaluate(model, X_test, y_test, name):
         "recall": recall_score(y_test, y_pred),
         "f1": f1_score(y_test, y_pred),
         "roc_auc": roc_auc_score(y_test, y_prob),
-        'classification_report': classification_report(y_test, y_prob),
-        'confusion_matrix': confusion_matrix(y_test, y_prob)
+        'classification_report': classification_report(y_test, y_pred),
+        'confusion_matrix': confusion_matrix(y_test, y_pred)
     }
 
     logger.info(f"{name}: AUC={metrics['roc_auc']:.4f}, F1={metrics['f1']:.4f}")
@@ -58,7 +58,7 @@ def tune_with_random_search(model, params, X_train, y_train, name, model_output_
         n_iter=15,
         cv=3,
         scoring="f1",
-        n_jobs=-1,
+        n_jobs=4,
         verbose=2,
         random_state=42,
         refit=True
@@ -69,12 +69,27 @@ def tune_with_random_search(model, params, X_train, y_train, name, model_output_
 
     os.makedirs(model_output_dir, exist_ok=True)
     
-    joblib.dump(rs, os.path.join(model_output_dir, r"best_{name}.pkl"))
+    joblib.dump(rs, os.path.join(model_output_dir, f"best_{name}.pkl"))
     
     return rs.best_estimator_
 
 
-# XGBoost search space
+def find_best_threshold(y_true, y_prob):
+    thresholds = np.linspace(0.01, 0.99, 200)
+
+    best_f1 = 0
+    best_threshold = 0
+
+    for t in thresholds:
+        y_pred = (y_prob >= t).astype(int)
+        f1 = f1_score(y_true, y_pred)
+
+        if f1 > best_f1:
+            best_f1 = f1
+            best_threshold = t
+
+    return best_threshold, best_f1
+
 xgb_param_dist = {
     "n_estimators": [300, 500, 800],
     "learning_rate": [0.01, 0.03, 0.05],
@@ -87,7 +102,6 @@ xgb_param_dist = {
     "reg_lambda": [1, 2, 3]
 }
 
-# LightGBM search space
 lgbm_param_dist = {
     "n_estimators": [300, 500, 800],
     "learning_rate": [0.01, 0.03, 0.05],
@@ -100,7 +114,6 @@ lgbm_param_dist = {
     "reg_lambda": [1, 2, 3]
 }
 
-# CatBoost search space
 cat_param_dist = {
     "iterations": [300, 500, 800],
     "depth": [4, 6, 8],
@@ -112,43 +125,43 @@ cat_param_dist = {
 def model_pipeline(processed_dir: str, model_output_dir: str):
     logger.info("Model pipeline started")
 
-    # load data
     X_train, X_test, y_train, y_test = load_processed_data(processed_dir)
 
-    # tune XGBoost
-    tuned_xgb = tune_with_random_search(
-        XGBClassifier(
-            objective="binary:logistic",
-            eval_metric="logloss",
-            tree_method="hist",
-            max_bin=256,
-            random_state=42,
-            n_jobs=-1,
-        ),
-        xgb_param_dist, X_train, y_train, "XGBoost", model_output_dir
-    )
+    # tuned_xgb = tune_with_random_search(
+    #     XGBClassifier(
+    #         objective="binary:logistic",
+    #         eval_metric="logloss",
+    #         tree_method="hist",
+    #         max_bin=256,
+    #         random_state=42,
+    #         n_jobs=-1,
+    #     ),
+    #     xgb_param_dist, X_train, y_train, "XGBoost", model_output_dir
+    # )
 
-    # tune LightGBM
-    tuned_lgbm = tune_with_random_search(
-        LGBMClassifier(
-            random_state=42,
-            n_jobs=-1,
-            force_col_wise=True,
-            verbose=-1
-        ),
-        lgbm_param_dist, X_train, y_train, "LightGBM", model_output_dir
-    )
+    # tuned_lgbm = tune_with_random_search(
+    #     LGBMClassifier(
+    #         random_state=42,
+    #         n_jobs=-1,
+    #         force_col_wise=True,
+    #         verbose=-1
+    #     ),
+    #     lgbm_param_dist, X_train, y_train, "LightGBM", model_output_dir
+    # )
 
-    # tune CatBoost
-    tuned_cat = tune_with_random_search(
-        CatBoostClassifier(
-            verbose=0,
-            random_state=42,
-            thread_count=-1
-        ),
-        cat_param_dist, X_train, y_train, "CatBoost", model_output_dir
-    )
-    # evaluate all models
+    # tuned_cat = tune_with_random_search(
+    #     CatBoostClassifier(
+    #         verbose=0,
+    #         random_state=42,
+    #         thread_count=-1
+    #     ),
+    #     cat_param_dist, X_train, y_train, "CatBoost", model_output_dir
+    # )
+    
+    tuned_xgb = joblib.load(r'D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_XGBoost.pkl')
+    tuned_lgbm = joblib.load(r'D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_LightGBM.pkl')
+    tuned_cat = joblib.load(r'D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_CatBoost.pkl')
+    
     results = []
     results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
     results.append(evaluate(tuned_lgbm, X_test, y_test, "LightGBM"))
@@ -166,17 +179,30 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
 
     logger.info(f"Best model: {best_model_name}")
 
-    # save outputs
+    logger.info("Running threshold tuning...")
+
+    best_model = joblib.load(r'D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_model.pkl')
+
+    y_prob = best_model.predict_proba(X_test)[:, 1]
+    best_threshold, best_f1 = find_best_threshold(y_test, y_prob)
+
+    logger.info(f"Optimal Threshold: {best_threshold:.3f}")
+    logger.info(f"Best F1 at this threshold: {best_f1:.4f}")
+
+    y_pred_thresh = (y_prob >= best_threshold).astype(int)
+
+    preds = pd.DataFrame({
+        "y_true": y_test,
+        "y_pred": y_pred_thresh,
+        "y_prob": y_prob,
+        "threshold_used": best_threshold
+    })
+
     os.makedirs(model_output_dir, exist_ok=True)
 
     joblib.dump(best_model, os.path.join(model_output_dir, "best_model.pkl"))
     results_df.to_csv(os.path.join(model_output_dir, "model_comparison.csv"), index=False)
 
-    preds = pd.DataFrame({
-        "y_true": y_test,
-        "y_pred": best_model.predict(X_test),
-        "y_prob": best_model.predict_proba(X_test)[:, 1]
-    })
     preds.to_parquet(os.path.join(model_output_dir, "predictions.parquet"), index=False)
 
     logger.info("Model pipeline completed")

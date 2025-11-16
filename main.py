@@ -41,15 +41,15 @@ def main():
 
     # STEP 1: cleaning
     logger.info("STEP 1: Running Data Cleaning Pipeline")
-    clean_data_pipeline(RAW_DATA_PATH, CLEANED_DIR)
+    # clean_data_pipeline(RAW_DATA_PATH, CLEANED_DIR)
 
     # STEP 2: feature engineering
     logger.info("STEP 2: Running Feature Engineering Pipeline")
-    feature_engineering_pipeline(CLEANED_OUTPUT, FEATURE_DIR)
+    # feature_engineering_pipeline(CLEANED_OUTPUT, FEATURE_DIR)
 
     # STEP 3: preprocessing
     logger.info("STEP 3: Running Data Preprocessing Pipeline")
-    data_preprocessing_pipeline(FEATURE_OUTPUT, PROCESSED_DIR)
+    # data_preprocessing_pipeline(FEATURE_OUTPUT, PROCESSED_DIR)
 
     # STEP 4: Model Training + Tuning
     logger.info("STEP 4: Running Model Tuning Pipeline")

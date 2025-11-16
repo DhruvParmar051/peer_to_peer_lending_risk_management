@@ -33,3 +33,142 @@
        [ 26288,  46308]]), 'threshold': np.float64(0.3869230769230769)}
 2025-11-16 20:24:22,549 - INFO - src.model - Model pipeline completed successfully.
 2025-11-16 20:24:22,687 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====
+2025-11-16 20:48:06,237 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:48:06,238 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:48:06,239 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:48:06,239 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:48:06,239 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:48:06,239 - INFO - src.model - Model pipeline started
+2025-11-16 20:48:11,145 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 20:48:26,585 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:48:26,585 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:48:26,586 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:48:26,586 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:48:26,586 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:48:26,587 - INFO - src.model - Model pipeline started
+2025-11-16 20:48:29,004 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 20:49:06,089 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:49:06,090 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:49:06,090 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:49:06,090 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:49:06,091 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:49:06,091 - INFO - src.model - Model pipeline started
+2025-11-16 20:49:08,395 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 20:49:24,795 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:49:24,796 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:49:24,796 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:49:24,796 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:49:24,796 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:49:24,797 - INFO - src.model - Model pipeline started
+2025-11-16 20:49:27,224 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 20:50:07,970 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:50:07,971 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:50:07,971 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:50:07,971 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:50:07,972 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:50:07,972 - INFO - src.model - Model pipeline started
+2025-11-16 20:50:10,223 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 20:51:13,425 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:51:13,426 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:51:13,426 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:51:13,426 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:51:13,426 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:51:13,427 - INFO - src.model - Model pipeline started
+2025-11-16 20:51:15,877 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 20:51:28,936 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 20:51:28,937 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 20:51:28,937 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 20:51:28,937 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 20:51:28,937 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 20:51:28,937 - INFO - src.model - Model pipeline started
+2025-11-16 20:51:31,279 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 21:09:20,561 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:09:20,562 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:09:20,562 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:09:20,562 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:09:20,563 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 21:09:20,563 - INFO - src.model - Model pipeline started
+2025-11-16 21:11:36,890 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:11:36,891 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:11:36,891 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:11:36,892 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:11:36,892 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-16 21:11:59,352 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:11:59,352 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:11:59,353 - INFO - src.data_cleaning - Starting data cleaning pipeline.
+2025-11-16 21:11:59,353 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\raw_data\data.parquet
+2025-11-16 21:12:59,890 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:12:59,891 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:12:59,891 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:12:59,892 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:12:59,892 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-16 21:13:03,110 - INFO - utils.data_load - Loaded dataset: 1860765 rows, 85 columns
+2025-11-16 21:13:51,302 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 21:13:51,304 - INFO - src.model - Model pipeline started
+2025-11-16 21:13:54,144 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 21:13:55,302 - INFO - src.model - Balance Bagging Classifier
+2025-11-16 21:19:18,394 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:19:18,395 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:19:18,396 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:19:18,396 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:19:18,396 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-16 21:19:21,587 - INFO - utils.data_load - Loaded dataset: 1860765 rows, 85 columns
+2025-11-16 21:19:43,700 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:19:43,701 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:19:43,701 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:19:43,701 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:19:43,701 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 21:19:43,732 - INFO - src.model - Model pipeline started
+2025-11-16 21:19:47,464 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 21:19:47,886 - INFO - src.model - Balance Bagging Classifier
+2025-11-16 21:23:07,676 - INFO - src.model - Stacking with full feature set and XGBoost meta-model
+2025-11-16 21:23:22,973 - INFO - src.model - Selected recall-tuned threshold (F2): 0.5279
+2025-11-16 21:23:22,974 - INFO - src.model - Selected F1 threshold: 0.5279
+2025-11-16 21:24:58,732 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:24:58,733 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:24:58,733 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:24:58,733 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:24:58,733 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 21:24:58,733 - INFO - src.model - Model pipeline started
+2025-11-16 21:25:03,775 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 21:25:04,092 - INFO - src.model - Balance Bagging Classifier
+2025-11-16 21:28:30,057 - INFO - src.model - Stacking with full feature set and XGBoost meta-model
+2025-11-16 21:28:45,645 - INFO - src.model - Selected recall-tuned threshold (F2): 0.5279
+2025-11-16 21:28:45,645 - INFO - src.model - Selected F1 threshold: 0.5279
+2025-11-16 21:28:51,792 - INFO - src.model - Final test metrics:
+2025-11-16 21:28:51,792 - INFO - src.model - {'accuracy': 0.89359483868194, 'precision': 0.9110546378653113, 'recall': 0.5037054383161607, 'f1': 0.6487363948444554, 'roc_auc': 0.9528713234863131, 'classification_report': '              precision    recall  f1-score   support\n\n           0       0.89      0.99      0.94    299557\n           1       0.91      0.50      0.65     72596\n\n    accuracy                           0.89    372153\n   macro avg       0.90      0.75      0.79    372153\nweighted avg       0.90      0.89      0.88    372153\n', 'confusion_matrix': array([[295987,   3570],
+       [ 36029,  36567]]), 'threshold': np.float64(0.5278595317725753)}
+2025-11-16 21:28:52,762 - INFO - src.model - Model pipeline completed successfully.
+2025-11-16 21:28:52,917 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====
+2025-11-16 21:32:25,918 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:32:25,919 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:32:25,919 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:32:25,919 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:32:25,919 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 21:32:25,920 - INFO - src.model - Model pipeline started
+2025-11-16 21:32:32,535 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 21:32:32,788 - INFO - src.model - Balance Bagging Classifier
+2025-11-16 21:35:58,241 - INFO - src.model - Stacking with full feature set and XGBoost meta-model
+2025-11-16 21:36:14,297 - INFO - src.model - Selected recall-tuned threshold (F2): 0.5279
+2025-11-16 21:36:14,298 - INFO - src.model - Selected F1 threshold: 0.5279
+2025-11-16 21:36:20,169 - INFO - src.model - Final test metrics:
+2025-11-16 21:36:20,169 - INFO - src.model - {'accuracy': 0.89359483868194, 'precision': 0.9110546378653113, 'recall': 0.5037054383161607, 'f1': 0.6487363948444554, 'roc_auc': 0.9528713234863131, 'classification_report': '              precision    recall  f1-score   support\n\n           0       0.89      0.99      0.94    299557\n           1       0.91      0.50      0.65     72596\n\n    accuracy                           0.89    372153\n   macro avg       0.90      0.75      0.79    372153\nweighted avg       0.90      0.89      0.88    372153\n', 'confusion_matrix': array([[295987,   3570],
+       [ 36029,  36567]]), 'threshold': np.float64(0.5278595317725753)}
+2025-11-16 21:36:21,171 - INFO - src.model - Model pipeline completed successfully.
+2025-11-16 21:36:21,336 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====
+2025-11-16 21:40:00,214 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 21:40:00,215 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 21:40:00,216 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 21:40:00,216 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 21:40:00,216 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 21:40:00,217 - INFO - src.model - Model pipeline started
+2025-11-16 21:40:05,656 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 21:40:05,968 - INFO - src.model - Balance Bagging Classifier
+2025-11-16 21:44:20,020 - INFO - src.model - Stacking with full feature set and XGBoost meta-model
+2025-11-16 21:44:39,185 - INFO - src.model - Selected recall-tuned threshold (F2): 0.5279
+2025-11-16 21:44:39,185 - INFO - src.model - Selected F1 threshold: 0.5279
+2025-11-16 21:44:48,034 - INFO - src.model - Final test metrics:
+2025-11-16 21:44:48,035 - INFO - src.model - {'accuracy': 0.8821130019105046, 'precision': 0.6395371431902532, 'recall': 0.9067303983690561, 'f1': 0.7500484269778147, 'roc_auc': 0.953841867074986, 'classification_report': '              precision    recall  f1-score   support\n\n           0       0.97      0.88      0.92    299557\n           1       0.64      0.91      0.75     72596\n\n    accuracy                           0.88    372153\n   macro avg       0.81      0.89      0.84    372153\nweighted avg       0.91      0.88      0.89    372153\n', 'confusion_matrix': array([[262456,  37101],
+       [  6771,  65825]]), 'threshold': np.float64(0.5278595317725753)}
+2025-11-16 21:44:49,034 - INFO - src.model - Model pipeline completed successfully.
+2025-11-16 21:44:49,160 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====

@@ -59,7 +59,7 @@ def tune_with_random_search(model, params, X_train, y_train, name, model_output_
         n_iter=15,
         cv=3,
         scoring="f1",
-        n_jobs=6,
+        n_jobs=-1,
         verbose=2,
         random_state=42
     )
@@ -119,40 +119,46 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     logger.info(f"Using scale_pos_weight={pos_weight:.3f}")
 
     # Base models
-    xgb_model = XGBClassifier(
-        objective="binary:logistic",
-        eval_metric="logloss",
-        tree_method="hist",
-        max_bin=256,
-        random_state=42,
-        n_jobs=-1,
-        scale_pos_weight=pos_weight
-    )
+    # xgb_model = XGBClassifier(
+    #     objective="binary:logistic",
+    #     eval_metric="logloss",
+    #     tree_method="hist",
+    #     max_bin=256,
+    #     random_state=42,
+    #     n_jobs=-1,
+    #     scale_pos_weight=pos_weight
+    # )
 
-    lgbm_model = LGBMClassifier(
-        random_state=42,
-        n_jobs=-1,
-        force_col_wise=True,
-        verbose=-1,
-        is_unbalance=True
-    )
+    # lgbm_model = LGBMClassifier(
+    #     random_state=42,
+    #     n_jobs=-1,
+    #     force_col_wise=True,
+    #     verbose=-1,
+    #     is_unbalance=True
+    # )
 
-    cat_model = CatBoostClassifier(
-        verbose=0,
-        random_state=42,
-        thread_count=-1,
-        class_weights=[1, pos_weight]
-    )
+    # cat_model = CatBoostClassifier(
+    #     verbose=0,
+    #     random_state=42,
+    #     thread_count=-1,
+    #     class_weights=[1, pos_weight]
+    # )
 
     # Tune models
-    tuned_xgb = tune_with_random_search(xgb_model, xgb_param_dist, X_tr, y_tr, "XGBoost", model_output_dir)
-    tuned_lgbm = tune_with_random_search(lgbm_model, lgbm_param_dist, X_tr, y_tr, "LightGBM", model_output_dir)
-    tuned_cat = tune_with_random_search(cat_model, cat_param_dist, X_tr, y_tr, "CatBoost", model_output_dir)
+    # tuned_xgb = tune_with_random_search(xgb_model, xgb_param_dist, X_tr, y_tr, "XGBoost", model_output_dir)
+    # tuned_lgbm = tune_with_random_search(lgbm_model, lgbm_param_dist, X_tr, y_tr, "LightGBM", model_output_dir)
+    # tuned_cat = tune_with_random_search(cat_model, cat_param_dist, X_tr, y_tr, "CatBoost", model_output_dir)
+    
+    tuned_xgb = joblib.load(os.getcwd() + r'/models/best_XGBoost.pkl')
+    tuned_lgbm = joblib.load(os.getcwd() + r'/models/best_LightGBM.pkl')
+    tuned_cat = joblib.load(os.getcwd() + r'/models/best_CatBoost.pkl')
+    
+    logger.info("Balance Bagging Classifier")
     
     balanced_xgb = BalancedBaggingClassifier(
         estimator=tuned_xgb,
         sampling_strategy="auto",
-        n_estimators=10,
+        n_estimators=2,
         replacement=False,
         n_jobs=-1,
         random_state=42
@@ -175,6 +181,11 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     val_stack_X["xgb_lgbm"] = val_base["xgb"] * val_base["lgbm"]
     val_stack_X["xgb_cat"] = val_base["xgb"] * val_base["cat"]
     val_stack_X["lgbm_cat"] = val_base["lgbm"] * val_base["cat"]
+    val_stack_X["risk_signal"] = (
+    0.6 * val_base["xgb"] +
+    0.3 * val_base["lgbm"] +
+    0.1 * val_base["cat"]
+    )
 
     logger.info("Stacking with full feature set and XGBoost meta-model")
 
@@ -188,30 +199,38 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     reg_lambda=2,
     eval_metric="logloss",
     random_state=42,
-    n_jobs=-1
+    n_jobs=-1,
+    scale_pos_weight=5
     )
 
     meta_model.fit(val_stack_X, y_val)
 
     ensemble_val = meta_model.predict_proba(val_stack_X)[:, 1]
 
-    # F1 threshold tuning
+    # recall-focused threshold tuning using F2 score
     thresholds = np.linspace(0.01, 0.99, 300)
-    best_threshold, best_f1 = 0.5, 0
+    best_threshold = 0.5
+    best_f2 = 0
 
     for t in thresholds:
         pred = (ensemble_val >= t).astype(int)
-        f1 = f1_score(y_val, pred)
+        precision = precision_score(y_val, pred)
+        recall = recall_score(y_val, pred)
 
-        if f1 > best_f1:
-            best_f1 = f1
+        f2 = (5 * precision * recall) / (4 * precision + recall + 1e-9)
+
+        if f2 > best_f2:
+            best_f2 = f2
             best_threshold = t
+
+    logger.info(f"Selected recall-tuned threshold (F2): {best_threshold:.4f}")
+
 
     logger.info(f"Selected F1 threshold: {best_threshold:.4f}")
 
     # Prepare test stacking
     test_base = pd.DataFrame({
-        "xgb": tuned_xgb.predict_proba(X_test)[:, 1],
+        "xgb": balanced_xgb.predict_proba(X_test)[:, 1],
         "lgbm": tuned_lgbm.predict_proba(X_test)[:, 1],
         "cat": tuned_cat.predict_proba(X_test)[:, 1]
     })
@@ -225,6 +244,12 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     test_stack_X["xgb_lgbm"] = test_base["xgb"] * test_base["lgbm"]
     test_stack_X["xgb_cat"] = test_base["xgb"] * test_base["cat"]
     test_stack_X["lgbm_cat"] = test_base["lgbm"] * test_base["cat"]
+
+    test_stack_X["risk_signal"] = (
+    0.6 * test_base["xgb"] +
+    0.3 * test_base["lgbm"] +
+    0.1 * test_base["cat"]
+    )
 
     test_probs = meta_model.predict_proba(test_stack_X)[:, 1]
 

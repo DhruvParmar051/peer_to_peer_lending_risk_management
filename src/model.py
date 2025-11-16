@@ -252,7 +252,8 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
     pd.DataFrame({
         "y_true": y_test,
         "y_prob": test_probs,
-        "y_pred": y_test_pred
+        "y_pred": y_test_pred,
+        'thresholds': best_threshold
     }).to_parquet(os.path.join(model_output_dir, "predictions.parquet"), index=False)
 
     logger.info("Model pipeline completed successfully.")

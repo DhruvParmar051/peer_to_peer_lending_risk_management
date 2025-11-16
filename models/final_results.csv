@@ -1,5 +1,5 @@
 accuracy,precision,recall,f1,roc_auc,classification_report,confusion_matrix,threshold
-0.912775122060013,0.7575827589305197,0.8130062262383603,0.7843165916958466,0.9572577046984369,"              precision    recall  f1-score   support
+0.9128261763307027,0.7587975972569543,0.8108711223758884,0.7839705941108315,0.9572720167714928,"              precision    recall  f1-score   support
 
            0       0.95      0.94      0.95    299557
            1       0.76      0.81      0.78     72596
@@ -7,5 +7,5 @@ accuracy,precision,recall,f1,roc_auc,classification_report,confusion_matrix,thre
     accuracy                           0.91    372153
    macro avg       0.86      0.87      0.86    372153
 weighted avg       0.92      0.91      0.91    372153
-","[[280671  18886]
- [ 13575  59021]]",0.4000334448160535
+","[[280845  18712]
+ [ 13730  58866]]",0.29842809364548495

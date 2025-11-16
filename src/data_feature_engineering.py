@@ -1,57 +1,44 @@
 import os
 import numpy as np
 import pandas as pd
-import warnings
-
 from utils.data_load import load_data
 from utils.logger import get_logger
 
-warnings.filterwarnings("ignore")
 logger = get_logger(__name__)
 
 
-def create_target(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Create a binary target column 'is_default' from 'loan_status'.
-    Keeps only rows where loan_status is Fully Paid, Charged Off, or Default.
-    """
+def create_target_and_basic_features(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Creating target variable 'is_default'.")
 
     valid_status = ["Fully Paid", "Charged Off", "Default"]
-    df = df[df["loan_status"].isin(valid_status)].copy()
+    if "loan_status" in df.columns:
+        df = df[df["loan_status"].isin(valid_status)].copy()
+        df["is_default"] = df["loan_status"].apply(lambda x: 1 if x in ["Charged Off", "Default"] else 0)
+        df = df.drop(columns=["loan_status"])
 
-    df["is_default"] = df["loan_status"].apply(
-        lambda x: 1 if x in ["Charged Off", "Default"] else 0
-    )
+    if "issue_d" in df.columns:
+        df["issue_year"] = df["issue_d"].dt.year
+        df["issue_month"] = df["issue_d"].dt.month
 
-    df.drop(columns=["loan_status"], inplace=True)
+    if "earliest_cr_line" in df.columns and "issue_d" in df.columns:
+        df["credit_history_years"] = (df["issue_d"] - df["earliest_cr_line"]).dt.days / 365.25
+        df = df.drop(columns=["earliest_cr_line"], errors="ignore")
 
-    logger.info(f"Target column created. Data shape after filtering: {df.shape}")
+    if "last_pymnt_d" in df.columns and "issue_d" in df.columns:
+        df["days_since_last_payment"] = (df["issue_d"] - df["last_pymnt_d"]).dt.days
+
     return df
 
 
 def feature_engineering_pipeline(input_path: str, output_dir: str):
-    """
-    Main Feature Engineering Pipeline (No PCA).
-    
-    Steps:
-    1. Load cleaned data
-    2. Create binary target variable
-    3. Save the dataset (no PCA, no dimensionality reduction)
-    """
     logger.info("Starting feature engineering pipeline.")
-
-    # Load cleaned dataset
     df = load_data(input_path)
-    logger.info(f"Data loaded successfully: {df.shape}")
+    logger.info(f"Data loaded: {df.shape}")
 
-    # Create binary target
-    df = create_target(df)
+    df = create_target_and_basic_features(df)
 
-    # Save final dataset
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "engineered_data.parquet")
-    df.to_parquet(output_path, index=False)
+    out_path = os.path.join(output_dir, "engineered_data.parquet")
+    df.to_parquet(out_path, index=False)
 
-    logger.info(f"Feature engineered data saved to: {output_path}")
-    logger.info("Feature engineering pipeline completed successfully.")
+    logger.info(f"Feature engineered data saved: {out_path}")

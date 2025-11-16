@@ -56,6 +56,8 @@ peer_to_peer_lending_risk_management/
 ├── main.py
 ├── .gitignore
 ├── LICENSE
+├── Report/
+|   ├── Project_Report_Peer_to_Peer_Lending_Risk_Management.pdf   
 ├── data/
 │   ├── Loan_status_2007-2020Q3.gzip
 │   ├── unemployment_rate_by_state.csv
@@ -156,7 +158,7 @@ The orchestrator sequentially calls the following pipelines:
 - model_pipeline(...)  
 
 Each step automatically:
-- Logs progress  
+- Logs progress
 - Saves intermediate datasets  
 - Writes artifacts to the appropriate directories  
 

@@ -1,2 +1,0 @@
-accuracy,precision,recall,f1,roc_auc,subsample,reg_lambda,reg_alpha,n_estimators,min_child_weight,max_depth,learning_rate,gamma,colsample_bytree,cv_f1
-0.9688219630098374,0.9366311117474407,0.901137803735743,0.9185417120070766,0.9914157115885324,0.8,3,0.1,1200,5,6,0.1,0.1,0.8,0.9165231387326616

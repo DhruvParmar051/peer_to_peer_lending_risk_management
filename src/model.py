@@ -1,20 +1,19 @@
 import os
 import numpy as np
 import pandas as pd
-import warnings
 import joblib
+import warnings
 
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score,
-    f1_score, roc_auc_score, classification_report
+    accuracy_score, precision_score, recall_score, f1_score,
+    roc_auc_score, classification_report, confusion_matrix
 )
-from sklearn.ensemble import StackingClassifier
-from sklearn.linear_model import LogisticRegression
 
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
+from imblearn.ensemble import BalancedBaggingClassifier
 
 from utils.logger import get_logger
 
@@ -23,16 +22,16 @@ logger = get_logger(__name__)
 
 
 def load_processed_data(processed_dir: str):
-    """Load train/test processed data"""
     X_train = pd.read_parquet(os.path.join(processed_dir, "X_train_processed.parquet"))
     X_test = pd.read_parquet(os.path.join(processed_dir, "X_test_processed.parquet"))
-    y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet")).squeeze()
-    y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet")).squeeze()
+
+    y_train = pd.read_parquet(os.path.join(processed_dir, "y_train.parquet"))["is_default"]
+    y_test = pd.read_parquet(os.path.join(processed_dir, "y_test.parquet"))["is_default"]
+
     return X_train, X_test, y_train, y_test
 
 
 def evaluate(model, X_test, y_test, name):
-    """Evaluate a trained model"""
     y_pred = model.predict(X_test)
     y_prob = model.predict_proba(X_test)[:, 1]
 
@@ -42,134 +41,252 @@ def evaluate(model, X_test, y_test, name):
         "precision": precision_score(y_test, y_pred),
         "recall": recall_score(y_test, y_pred),
         "f1": f1_score(y_test, y_pred),
-        "roc_auc": roc_auc_score(y_test, y_prob)
+        "roc_auc": roc_auc_score(y_test, y_prob),
+        "classification_report": classification_report(y_test, y_pred),
+        "confusion_matrix": confusion_matrix(y_test, y_pred)
     }
 
     logger.info(f"{name}: AUC={metrics['roc_auc']:.4f}, F1={metrics['f1']:.4f}")
     return metrics
 
 
-def tune_with_random_search(model, params, X_train, y_train, name):
-    """Tune model using RandomizedSearchCV"""
+def tune_with_random_search(model, params, X_train, y_train, name, model_output_dir):
     logger.info(f"Tuning {name}...")
 
     rs = RandomizedSearchCV(
         estimator=model,
         param_distributions=params,
-        n_iter=10,
-        cv=2,
+        n_iter=15,
+        cv=3,
         scoring="f1",
         n_jobs=-1,
         verbose=2,
         random_state=42
     )
-    rs.fit(X_train, y_train)
 
+    rs.fit(X_train, y_train)
     logger.info(f"{name} best params: {rs.best_params_}")
+
+    os.makedirs(model_output_dir, exist_ok=True)
+    joblib.dump(rs, os.path.join(model_output_dir, f"best_{name}.pkl"))
+
     return rs.best_estimator_
 
 
-# Parameter grids
-
+# parameter grids
 xgb_param_dist = {
-    "n_estimators": [300, 500, 800, 1200],
-    "learning_rate": [0.01, 0.03, 0.05, 0.1],
-    "max_depth": [4, 6, 8, 10],
-    "min_child_weight": [1, 3, 5, 7],
-    "subsample": [0.6, 0.7, 0.8, 1.0],
-    "colsample_bytree": [0.5, 0.6, 0.7, 0.8],
-    "gamma": [0, 0.1, 0.2, 0.3],
-    "reg_alpha": [0, 0.01, 0.1, 1],
-    "reg_lambda": [1, 1.5, 2, 3]
+    "n_estimators": [300, 500, 800],
+    "learning_rate": [0.01, 0.03, 0.05],
+    "max_depth": [4, 6, 8],
+    "min_child_weight": [1, 3, 5],
+    "subsample": [0.7, 0.8, 1.0],
+    "colsample_bytree": [0.6, 0.7, 0.8],
+    "gamma": [0, 0.1, 0.2],
+    "reg_alpha": [0, 0.01, 0.1],
+    "reg_lambda": [1, 2, 3]
 }
 
 lgbm_param_dist = {
     "n_estimators": [300, 500, 800],
     "learning_rate": [0.01, 0.03, 0.05],
-    "num_leaves": [15, 31, 50],
-    "max_depth": [3, 4, 5, -1],
-    "min_child_samples": [100, 200, 300],
-    "subsample": [0.6, 0.8, 1.0],
-    "colsample_bytree": [0.6, 0.8, 1.0],
-    "reg_alpha": [0, 0.1, 0.3],
-    "reg_lambda": [1, 2, 3]
+    "num_leaves": [31, 50, 64],
+    "max_depth": [-1, 4, 6],
+    "min_child_samples": [50, 100],
+    "subsample": [0.6, 0.8],
+    "colsample_bytree": [0.6, 0.8],
+    "reg_alpha": [0, 0.1],
+    "reg_lambda": [1, 2]
 }
-
 
 cat_param_dist = {
     "iterations": [300, 500, 800],
-    "depth": [4, 6, 8, 10],
+    "depth": [4, 6, 8],
     "learning_rate": [0.01, 0.03, 0.05],
-    "l2_leaf_reg": [1, 3, 5, 7],
-    "border_count": [32, 64, 128]
+    "l2_leaf_reg": [1, 3, 5]
 }
 
 
 def model_pipeline(processed_dir: str, model_output_dir: str):
-    """Train, tune, ensemble, evaluate and save best model"""
     logger.info("Model pipeline started")
 
     X_train, X_test, y_train, y_test = load_processed_data(processed_dir)
 
-    # tuned_xgb = tune_with_random_search(
-    #     XGBClassifier(objective="binary:logistic", eval_metric="logloss", random_state=42),
-    #     xgb_param_dist, X_train, y_train, "XGBoost"
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X_train, y_train, test_size=0.15, stratify=y_train, random_state=42
+    )
+
+    pos_weight = (y_train.value_counts()[0] / y_train.value_counts()[1])
+    logger.info(f"Using scale_pos_weight={pos_weight:.3f}")
+
+    # Base models
+    # xgb_model = XGBClassifier(
+    #     objective="binary:logistic",
+    #     eval_metric="logloss",
+    #     tree_method="hist",
+    #     max_bin=256,
+    #     random_state=42,
+    #     n_jobs=-1,
+    #     scale_pos_weight=pos_weight
     # )
 
-    tuned_lgbm = tune_with_random_search( 
-        LGBMClassifier(random_state=42, force_col_wise=True,  min_split_gain=0.001,n_jobs=-1, verbose=-1),
-        lgbm_param_dist, X_train, y_train, "LightGBM"
+    # lgbm_model = LGBMClassifier(
+    #     random_state=42,
+    #     n_jobs=-1,
+    #     force_col_wise=True,
+    #     verbose=-1,
+    #     is_unbalance=True
+    # )
+
+    # cat_model = CatBoostClassifier(
+    #     verbose=0,
+    #     random_state=42,
+    #     thread_count=-1,
+    #     class_weights=[1, pos_weight]
+    # )
+
+    # Tune models
+    # tuned_xgb = tune_with_random_search(xgb_model, xgb_param_dist, X_tr, y_tr, "XGBoost", model_output_dir)
+    # tuned_lgbm = tune_with_random_search(lgbm_model, lgbm_param_dist, X_tr, y_tr, "LightGBM", model_output_dir)
+    # tuned_cat = tune_with_random_search(cat_model, cat_param_dist, X_tr, y_tr, "CatBoost", model_output_dir)
+    
+    tuned_xgb = joblib.load(os.getcwd() + r'/models/best_XGBoost.pkl')
+    tuned_lgbm = joblib.load(os.getcwd() + r'/models/best_LightGBM.pkl')
+    tuned_cat = joblib.load(os.getcwd() + r'/models/best_CatBoost.pkl')
+    
+    logger.info("Balance Bagging Classifier")
+    
+    balanced_xgb = BalancedBaggingClassifier(
+        estimator=tuned_xgb,
+        sampling_strategy="auto",
+        n_estimators=2,
+        replacement=False,
+        n_jobs=-1,
+        random_state=42
+    )
+    balanced_xgb.fit(X_train, y_train)
+    
+    # Stacking inputs
+    val_base = pd.DataFrame({
+        "xgb": balanced_xgb.predict_proba(X_val)[:, 1],    
+        "lgbm": tuned_lgbm.predict_proba(X_val)[:, 1],
+        "cat": tuned_cat.predict_proba(X_val)[:, 1]
+    })
+
+    val_stack_X = val_base.copy()
+    val_stack_X["min"] = val_base.min(axis=1)
+    val_stack_X["max"] = val_base.max(axis=1)
+    val_stack_X["mean"] = val_base.mean(axis=1)
+    val_stack_X["std"] = val_base.std(axis=1)
+
+    val_stack_X["xgb_lgbm"] = val_base["xgb"] * val_base["lgbm"]
+    val_stack_X["xgb_cat"] = val_base["xgb"] * val_base["cat"]
+    val_stack_X["lgbm_cat"] = val_base["lgbm"] * val_base["cat"]
+    val_stack_X["risk_signal"] = (
+    0.6 * val_base["xgb"] +
+    0.3 * val_base["lgbm"] +
+    0.1 * val_base["cat"]
     )
 
-    tuned_cat = tune_with_random_search(
-        CatBoostClassifier(verbose=0, random_state=42),
-        cat_param_dist, X_train, y_train, "CatBoost"
+    logger.info("Stacking with full feature set and XGBoost meta-model")
+
+    meta_model = XGBClassifier(
+    n_estimators=600,
+    max_depth=3,
+    learning_rate=0.03,
+    subsample=0.9,
+    colsample_bytree=0.9,
+    reg_alpha=0.1,
+    reg_lambda=2,
+    eval_metric="logloss",
+    random_state=42,
+    n_jobs=-1,
+    scale_pos_weight=5
     )
 
-    logger.info("Training stacking ensemble")
+    meta_model.fit(val_stack_X, y_val)
 
-    stack = StackingClassifier(
-        estimators=[
-            # ("xgb", tuned_xgb),
-            ("lgbm", tuned_lgbm),
-            ("cat", tuned_cat)
-        ],
-        final_estimator=LogisticRegression(max_iter=500),
-        stack_method="auto",
-        n_jobs=-1
+    ensemble_val = meta_model.predict_proba(val_stack_X)[:, 1]
+
+    # recall-focused threshold tuning using F2 score
+    thresholds = np.linspace(0.01, 0.99, 300)
+    best_threshold = 0.5
+    best_f2 = 0
+
+    for t in thresholds:
+        pred = (ensemble_val >= t).astype(int)
+        precision = precision_score(y_val, pred)
+        recall = recall_score(y_val, pred)
+
+        f2 = (5 * precision * recall) / (4 * precision + recall + 1e-9)
+
+        if f2 > best_f2:
+            best_f2 = f2
+            best_threshold = t
+
+    logger.info(f"Selected recall-tuned threshold (F2): {best_threshold:.4f}")
+
+
+    logger.info(f"Selected F1 threshold: {best_threshold:.4f}")
+
+    # Prepare test stacking
+    test_base = pd.DataFrame({
+        "xgb": balanced_xgb.predict_proba(X_test)[:, 1],
+        "lgbm": tuned_lgbm.predict_proba(X_test)[:, 1],
+        "cat": tuned_cat.predict_proba(X_test)[:, 1]
+    })
+
+    test_stack_X = test_base.copy()
+    test_stack_X["min"] = test_base.min(axis=1)
+    test_stack_X["max"] = test_base.max(axis=1)
+    test_stack_X["mean"] = test_base.mean(axis=1)
+    test_stack_X["std"] = test_base.std(axis=1)
+
+    test_stack_X["xgb_lgbm"] = test_base["xgb"] * test_base["lgbm"]
+    test_stack_X["xgb_cat"] = test_base["xgb"] * test_base["cat"]
+    test_stack_X["lgbm_cat"] = test_base["lgbm"] * test_base["cat"]
+
+    test_stack_X["risk_signal"] = (
+    0.6 * test_base["xgb"] +
+    0.3 * test_base["lgbm"] +
+    0.1 * test_base["cat"]
     )
-    stack.fit(X_train, y_train)
 
-    results = []
-    # results.append(evaluate(tuned_xgb, X_test, y_test, "XGBoost"))
-    results.append(evaluate(tuned_lgbm, X_test, y_test, "LightGBM"))
-    results.append(evaluate(tuned_cat, X_test, y_test, "CatBoost"))
-    results.append(evaluate(stack, X_test, y_test, "StackingEnsemble"))
+    test_probs = meta_model.predict_proba(test_stack_X)[:, 1]
 
-    results_df = pd.DataFrame(results)
+    y_test_pred = (test_probs >= best_threshold).astype(int)
 
-    best_row = results_df.iloc[results_df["roc_auc"].idxmax()]
-    best_model_name = best_row["model"]
+    final_metrics = {
+        "accuracy": accuracy_score(y_test, y_test_pred),
+        "precision": precision_score(y_test, y_test_pred),
+        "recall": recall_score(y_test, y_test_pred),
+        "f1": f1_score(y_test, y_test_pred),
+        "roc_auc": roc_auc_score(y_test, test_probs),
+        "classification_report": classification_report(y_test, y_test_pred),
+        "confusion_matrix": confusion_matrix(y_test, y_test_pred),
+        "threshold": best_threshold
+    }
 
-    best_model = {
-        # "XGBoost": tuned_xgb,
-        "LightGBM": tuned_lgbm,
-        "CatBoost": tuned_cat,
-        "StackingEnsemble": stack
-    }[best_model_name]
-
-    logger.info(f"Best model: {best_model_name}")
+    logger.info("Final test metrics:")
+    logger.info(final_metrics)
 
     os.makedirs(model_output_dir, exist_ok=True)
 
-    joblib.dump(best_model, os.path.join(model_output_dir, "best_model.pkl"))
-    results_df.to_csv(os.path.join(model_output_dir, "model_comparison.csv"), index=False)
+    joblib.dump(
+        {"xgb": tuned_xgb, "lgbm": tuned_lgbm, "cat": tuned_cat, "meta": meta_model},
+        os.path.join(model_output_dir, "stacked_models.pkl")
+    )
 
-    preds = pd.DataFrame({
+    pd.DataFrame([final_metrics]).to_csv(
+        os.path.join(model_output_dir, "final_results.csv"), index=False
+    )
+
+    pd.DataFrame({
         "y_true": y_test,
-        "y_pred": best_model.predict(X_test),
-        "y_prob": best_model.predict_proba(X_test)[:, 1]
-    })
-    preds.to_parquet(os.path.join(model_output_dir, "predictions.parquet"), index=False)
+        "y_prob": test_probs,
+        "y_pred": y_test_pred,
+        "thresholds": best_threshold
+    }).to_parquet(os.path.join(model_output_dir, "predictions.parquet"), index=False)
 
-    logger.info("Model pipeline completed")
+    logger.info("Model pipeline completed successfully.")
+
+    return final_metrics

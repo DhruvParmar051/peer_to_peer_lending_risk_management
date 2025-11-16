@@ -1,0 +1,35 @@
+2025-11-16 19:41:41,357 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-16 19:41:41,359 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-16 19:41:41,359 - INFO - src.data_cleaning - Starting data cleaning pipeline.
+2025-11-16 19:41:41,359 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\raw_data\data.parquet
+2025-11-16 19:41:51,266 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 145 columns
+2025-11-16 19:42:13,998 - INFO - src.data_cleaning - Removed 0 duplicate rows.
+2025-11-16 19:42:21,101 - INFO - src.data_cleaning - Dropped 22 columns: ['id', 'url', 'zip_code', 'emp_title', 'policy_code', 'application_type', 'pymnt_plan', 'hardship_flag', 'out_prncp', 'out_prncp_inv', 'total_pymnt', 'total_pymnt_inv', 'total_rec_prncp', 'total_rec_int', 'total_rec_late_fee', 'recoveries', 'collection_recovery_fee', 'last_pymnt_amnt', 'last_pymnt_d', 'last_credit_pull_d', 'issue_d', 'Unnamed_0']
+2025-11-16 19:42:53,734 - INFO - src.data_cleaning - Cleaned data saved to D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\cleaned_data\cleaned_data.parquet
+2025-11-16 19:42:53,739 - INFO - src.data_cleaning - Data cleaning pipeline completed.
+2025-11-16 19:42:53,858 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-16 19:42:53,860 - INFO - src.data_feature_engineering - Starting feature engineering pipeline.
+2025-11-16 19:42:53,862 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\cleaned_data\cleaned_data.parquet
+2025-11-16 19:42:55,989 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 85 columns
+2025-11-16 19:42:55,990 - INFO - src.data_feature_engineering - Data loaded: (2925493, 85)
+2025-11-16 19:42:55,990 - INFO - src.data_feature_engineering - Creating target variable 'is_default'.
+2025-11-16 19:43:03,203 - INFO - src.data_feature_engineering - Feature engineered data saved: D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-16 19:43:03,269 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-16 19:43:03,270 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-16 19:43:04,171 - INFO - utils.data_load - Loaded dataset: 1860765 rows, 85 columns
+2025-11-16 19:43:44,518 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-16 19:43:44,519 - INFO - src.model - Model pipeline started
+2025-11-16 19:43:46,931 - INFO - src.model - Using scale_pos_weight=4.126
+2025-11-16 19:43:47,042 - INFO - src.model - Tuning XGBoost...
+2025-11-16 19:49:19,459 - INFO - src.model - XGBoost best params: {'subsample': 1.0, 'reg_lambda': 3, 'reg_alpha': 0.01, 'n_estimators': 500, 'min_child_weight': 1, 'max_depth': 6, 'learning_rate': 0.03, 'gamma': 0.2, 'colsample_bytree': 0.6}
+2025-11-16 19:49:19,905 - INFO - src.model - Tuning LightGBM...
+2025-11-16 19:56:47,430 - INFO - src.model - LightGBM best params: {'subsample': 0.6, 'reg_lambda': 2, 'reg_alpha': 0.1, 'num_leaves': 64, 'n_estimators': 800, 'min_child_samples': 100, 'max_depth': 6, 'learning_rate': 0.05, 'colsample_bytree': 0.6}
+2025-11-16 19:56:47,969 - INFO - src.model - Tuning CatBoost...
+2025-11-16 20:18:02,101 - INFO - src.model - CatBoost best params: {'learning_rate': 0.03, 'l2_leaf_reg': 3, 'iterations': 800, 'depth': 4}
+2025-11-16 20:24:05,779 - INFO - src.model - Stacking with full feature set and XGBoost meta-model
+2025-11-16 20:24:15,125 - INFO - src.model - Selected F1 threshold: 0.3869
+2025-11-16 20:24:21,333 - INFO - src.model - Final test metrics:
+2025-11-16 20:24:21,333 - INFO - src.model - {'accuracy': 0.90928730925184, 'precision': 0.861079603562729, 'recall': 0.6378863849247892, 'f1': 0.73286646884273, 'roc_auc': 0.9509162675073324, 'classification_report': '              precision    recall  f1-score   support\n\n           0       0.92      0.98      0.95    299557\n           1       0.86      0.64      0.73     72596\n\n    accuracy                           0.91    372153\n   macro avg       0.89      0.81      0.84    372153\nweighted avg       0.91      0.91      0.90    372153\n', 'confusion_matrix': array([[292086,   7471],
+       [ 26288,  46308]]), 'threshold': np.float64(0.3869230769230769)}
+2025-11-16 20:24:22,549 - INFO - src.model - Model pipeline completed successfully.
+2025-11-16 20:24:22,687 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====

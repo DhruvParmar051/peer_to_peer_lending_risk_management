@@ -7,10 +7,8 @@ import joblib
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score,
-    f1_score, roc_auc_score
+    f1_score, roc_auc_score, classification_report, confusion_matrix
 )
-from sklearn.ensemble import StackingClassifier
-from sklearn.linear_model import LogisticRegression
 
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
@@ -42,21 +40,23 @@ def evaluate(model, X_test, y_test, name):
         "precision": precision_score(y_test, y_pred),
         "recall": recall_score(y_test, y_pred),
         "f1": f1_score(y_test, y_pred),
-        "roc_auc": roc_auc_score(y_test, y_prob)
+        "roc_auc": roc_auc_score(y_test, y_prob),
+        'classification_report': classification_report(y_test, y_prob),
+        'confusion_matrix': confusion_matrix(y_test, y_prob)
     }
 
     logger.info(f"{name}: AUC={metrics['roc_auc']:.4f}, F1={metrics['f1']:.4f}")
     return metrics
 
 
-def tune_with_random_search(model, params, X_train, y_train, name):
+def tune_with_random_search(model, params, X_train, y_train, name, model_output_dir):
     logger.info(f"Tuning {name}...")
 
     rs = RandomizedSearchCV(
         estimator=model,
         param_distributions=params,
-        n_iter=8,
-        cv=2,
+        n_iter=15,
+        cv=3,
         scoring="f1",
         n_jobs=-1,
         verbose=2,
@@ -67,6 +67,10 @@ def tune_with_random_search(model, params, X_train, y_train, name):
     rs.fit(X_train, y_train)
     logger.info(f"{name} best params: {rs.best_params_}")
 
+    os.makedirs(model_output_dir, exist_ok=True)
+    
+    joblib.dump(rs, os.path.join(model_output_dir, r"best_{name}.pkl"))
+    
     return rs.best_estimator_
 
 
@@ -121,7 +125,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
             random_state=42,
             n_jobs=-1,
         ),
-        xgb_param_dist, X_train, y_train, "XGBoost"
+        xgb_param_dist, X_train, y_train, "XGBoost", model_output_dir
     )
 
     # tune LightGBM
@@ -132,7 +136,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
             force_col_wise=True,
             verbose=-1
         ),
-        lgbm_param_dist, X_train, y_train, "LightGBM"
+        lgbm_param_dist, X_train, y_train, "LightGBM", model_output_dir
     )
 
     # tune CatBoost
@@ -142,7 +146,7 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
             random_state=42,
             thread_count=-1
         ),
-        cat_param_dist, X_train, y_train, "CatBoost"
+        cat_param_dist, X_train, y_train, "CatBoost", model_output_dir
     )
     # evaluate all models
     results = []

@@ -94,9 +94,9 @@ def model_pipeline(processed_dir: str, model_output_dir: str):
         class_weights=[1, pos_weight]
     )
 
-    tuned_xgb = tune_with_random_search(xgb_model, xgb_param_dist, X_tr, y_tr, "XGBoost", model_output_dir, n_iter=10, cv=3)
-    tuned_lgbm = tune_with_random_search(lgbm_model, lgbm_param_dist, X_tr, y_tr, "LightGBM", model_output_dir, n_iter=10, cv=3)
-    tuned_cat = tune_with_random_search(cat_model, cat_param_dist, X_tr, y_tr, "CatBoost", model_output_dir, n_iter=10, cv=3)
+    tuned_xgb = tune_with_random_search(xgb_model, xgb_param_dist, X_tr, y_tr, "XGBoost", model_output_dir)
+    tuned_lgbm = tune_with_random_search(lgbm_model, lgbm_param_dist, X_tr, y_tr, "LightGBM", model_output_dir)
+    tuned_cat = tune_with_random_search(cat_model, cat_param_dist, X_tr, y_tr, "CatBoost", model_output_dir)
 
     try:
         tuned_xgb = joblib.load(os.path.join(os.getcwd(), "models", "best_XGBoost.pkl"))

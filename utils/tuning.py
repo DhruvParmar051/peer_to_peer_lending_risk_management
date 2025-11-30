@@ -5,7 +5,7 @@ from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-def tune_with_random_search(model, params, X_train, y_train, name, model_output_dir, n_iter=10, cv=3):
+def tune_with_random_search(model, params, X_train, y_train, name, model_output_dir, n_iter=1, cv=2):
     logger.info("Starting RandomizedSearchCV for %s", name)
     rs = RandomizedSearchCV(
         estimator=model,

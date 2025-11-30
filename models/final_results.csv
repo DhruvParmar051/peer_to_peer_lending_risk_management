@@ -1,11 +1,11 @@
-accuracy,precision,recall,f1,roc_auc,classification_report,confusion_matrix,threshold
-0.8821130019105046,0.6395371431902532,0.9067303983690561,0.7500484269778147,0.953841867074986,"              precision    recall  f1-score   support
+model,accuracy,precision,recall,f1,roc_auc,classification_report,confusion_matrix,threshold,y_pred
+Stacked_Meta_Model,0.88080440034072,0.6335853305452791,0.9224061931786876,0.7511905095773621,0.9568670250573089,"              precision    recall  f1-score   support
 
-           0       0.97      0.88      0.92    299557
-           1       0.64      0.91      0.75     72596
+           0       0.98      0.87      0.92    299557
+           1       0.63      0.92      0.75     72596
 
     accuracy                           0.88    372153
-   macro avg       0.81      0.89      0.84    372153
+   macro avg       0.81      0.90      0.84    372153
 weighted avg       0.91      0.88      0.89    372153
-","[[262456  37101]
- [  6771  65825]]",0.5278595317725753
+","[[260831  38726]
+ [  5633  66963]]",0.5147491638795987,[0 0 0 ... 0 0 1]

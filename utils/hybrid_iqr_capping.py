@@ -23,8 +23,8 @@ def hybrid_iqr_capping(df, cols, factor=1.5):
         p99 = series.quantile(0.99)
 
         # Hybrid bounds
-        lower = max(iqr_lower, p1)
-        upper = min(iqr_upper, p99)
+        lower = min(iqr_lower, p1)
+        upper = max(iqr_upper, p99)
 
         df[col] = df[col].clip(lower, upper)
         caps[col] = {"lower": lower, "upper": upper}

@@ -47,7 +47,11 @@ def drop_unwanted_columns(df: pd.DataFrame, drop_list=None) -> pd.DataFrame:
     if drop_list is None:
         drop_list = [
             "id", "member_id", "url", "desc", "zip_code", "emp_title",
-            "policy_code", "application_type", "pymnt_plan", "hardship_flag", "out_prncp","out_prncp_inv","total_pymnt","total_pymnt_inv","total_rec_prncp","total_rec_int","total_rec_late_fee","recoveries","collection_recovery_fee","last_pymnt_amnt","last_pymnt_d","last_credit_pull_d","days_since_last_payment","issue_d", 'Unnamed_0'
+            "policy_code", "application_type", "pymnt_plan", "hardship_flag", 
+            "out_prncp","out_prncp_inv","total_pymnt","total_pymnt_inv","total_rec_prncp",
+            "total_rec_int","total_rec_late_fee","recoveries","collection_recovery_fee",
+            "last_pymnt_amnt","last_pymnt_d","last_credit_pull_d","days_since_last_payment",
+            "issue_d", 'Unnamed_0'
         ]
     existing = [c for c in drop_list if c in df.columns]
     if existing:

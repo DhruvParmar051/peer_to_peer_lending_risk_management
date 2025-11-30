@@ -24,9 +24,6 @@ def create_target_and_basic_features(df: pd.DataFrame) -> pd.DataFrame:
         df["credit_history_years"] = (df["issue_d"] - df["earliest_cr_line"]).dt.days / 365.25
         df = df.drop(columns=["earliest_cr_line"], errors="ignore")
 
-    if "last_pymnt_d" in df.columns and "issue_d" in df.columns:
-        df["days_since_last_payment"] = (df["issue_d"] - df["last_pymnt_d"]).dt.days
-
     return df
 
 

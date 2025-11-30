@@ -287,3 +287,48 @@
 2025-11-30 18:24:17,187 - INFO - model_pipeline - Final test metrics: {'accuracy': 0.88080440034072, 'precision': 0.6335853305452791, 'recall': 0.9224061931786876, 'f1': 0.7511905095773621, 'roc_auc': 0.9568670250573089, 'threshold': np.float64(0.5147491638795987)}
 2025-11-30 18:24:18,067 - INFO - model_pipeline - Model pipeline completed successfully.
 2025-11-30 18:24:18,426 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====
+2025-11-30 18:57:19,388 - INFO - __main__ - ===== STARTING FULL ML PIPELINE =====
+2025-11-30 18:57:19,389 - INFO - __main__ - STEP 1: Running Data Cleaning Pipeline
+2025-11-30 18:57:19,389 - INFO - src.data_cleaning - Starting data cleaning pipeline.
+2025-11-30 18:57:19,389 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\raw_data\data.parquet
+2025-11-30 18:57:32,826 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 145 columns
+2025-11-30 18:58:04,812 - INFO - src.data_cleaning - Removed 0 duplicate rows.
+2025-11-30 18:58:12,301 - INFO - src.data_cleaning - Dropped 22 columns: ['id', 'url', 'zip_code', 'emp_title', 'policy_code', 'application_type', 'pymnt_plan', 'hardship_flag', 'out_prncp', 'out_prncp_inv', 'total_pymnt', 'total_pymnt_inv', 'total_rec_prncp', 'total_rec_int', 'total_rec_late_fee', 'recoveries', 'collection_recovery_fee', 'last_pymnt_amnt', 'last_pymnt_d', 'last_credit_pull_d', 'issue_d', 'Unnamed_0']
+2025-11-30 18:58:49,979 - INFO - src.data_cleaning - Cleaned data saved to D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\cleaned_data\cleaned_data.parquet
+2025-11-30 18:58:50,020 - INFO - src.data_cleaning - Data cleaning pipeline completed.
+2025-11-30 18:58:50,183 - INFO - __main__ - STEP 2: Running Feature Engineering Pipeline
+2025-11-30 18:58:50,184 - INFO - src.data_feature_engineering - Starting feature engineering pipeline.
+2025-11-30 18:58:50,186 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\cleaned_data\cleaned_data.parquet
+2025-11-30 18:58:52,551 - INFO - utils.data_load - Loaded dataset: 2925493 rows, 85 columns
+2025-11-30 18:58:52,551 - INFO - src.data_feature_engineering - Data loaded: (2925493, 85)
+2025-11-30 18:58:52,552 - INFO - src.data_feature_engineering - Creating target variable 'is_default'.
+2025-11-30 18:59:02,268 - INFO - src.data_feature_engineering - Feature engineered data saved: D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-30 18:59:02,374 - INFO - __main__ - STEP 3: Running Data Preprocessing Pipeline
+2025-11-30 18:59:02,376 - INFO - utils.data_load - Loading dataset from D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\data\feature_engineered\engineered_data.parquet
+2025-11-30 18:59:03,682 - INFO - utils.data_load - Loaded dataset: 1860765 rows, 85 columns
+2025-11-30 18:59:56,830 - INFO - __main__ - STEP 4: Running Model Tuning Pipeline
+2025-11-30 18:59:56,831 - INFO - model_pipeline - Model pipeline started
+2025-11-30 18:59:59,992 - INFO - model_pipeline - Using scale_pos_weight=4.126
+2025-11-30 19:00:00,078 - INFO - utils.tuning - Starting RandomizedSearchCV for XGBoost
+2025-11-30 19:12:34,511 - INFO - utils.tuning - XGBoost best params: {'subsample': 0.7, 'reg_lambda': 2, 'reg_alpha': 0, 'n_estimators': 800, 'min_child_weight': 1, 'max_depth': 6, 'learning_rate': 0.03, 'gamma': 0.2, 'colsample_bytree': 0.7}
+2025-11-30 19:12:34,969 - INFO - utils.tuning - Saved RandomizedSearchCV result to D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_XGBoost.pkl
+2025-11-30 19:12:34,970 - INFO - utils.tuning - Starting RandomizedSearchCV for LightGBM
+2025-11-30 19:23:26,741 - INFO - utils.tuning - LightGBM best params: {'subsample': 0.6, 'reg_lambda': 2, 'reg_alpha': 0.1, 'num_leaves': 64, 'n_estimators': 800, 'min_child_samples': 100, 'max_depth': 6, 'learning_rate': 0.05, 'colsample_bytree': 0.6}
+2025-11-30 19:23:27,235 - INFO - utils.tuning - Saved RandomizedSearchCV result to D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_LightGBM.pkl
+2025-11-30 19:23:27,236 - INFO - utils.tuning - Starting RandomizedSearchCV for CatBoost
+2025-11-30 19:39:15,918 - INFO - utils.tuning - CatBoost best params: {'learning_rate': 0.03, 'l2_leaf_reg': 3, 'iterations': 800, 'depth': 4}
+2025-11-30 19:39:16,003 - INFO - utils.tuning - Saved RandomizedSearchCV result to D:\DAU\SEM 1\DS605 - Fundamentals of Machine Learning\peer_to_peer_lending_risk_management\models\best_CatBoost.pkl
+2025-11-30 19:39:16,701 - INFO - model_pipeline - Loaded pretrained tuned models from ./models/
+2025-11-30 19:49:50,406 - INFO - model_pipeline - Balanced bagging fitted on full training data
+2025-11-30 19:49:50,771 - INFO - utils.stacking - Training meta-model on validation set of shape (223292, 100)
+2025-11-30 19:49:50,793 - INFO - utils.stacking - Building stacking features for data of shape (223292, 100)
+2025-11-30 19:50:01,159 - INFO - utils.stacking - Tuning threshold using F2 with 300 steps
+2025-11-30 19:50:13,913 - INFO - utils.stacking - Tuned threshold = 0.5442 with F2 = 0.8629
+2025-11-30 19:50:13,914 - INFO - utils.stacking - Meta-model trained. Best threshold: 0.5442
+2025-11-30 19:50:13,927 - INFO - utils.stacking - Building stacking features for data of shape (372153, 100)
+2025-11-30 19:50:21,869 - INFO - utils.stacking - Building stacking features for data of shape (372153, 100)
+2025-11-30 19:50:28,791 - INFO - utils.evaluation - Evaluating model: Stacked_Meta_Model
+2025-11-30 19:50:30,182 - INFO - utils.evaluation - Stacked_Meta_Model metrics: AUC=0.9541 F1=0.7479 Precision=0.6336 Recall=0.9124
+2025-11-30 19:50:30,185 - INFO - model_pipeline - Final test metrics: {'accuracy': 0.8799875320096842, 'precision': 0.6335983011450053, 'recall': 0.9124056421841423, 'f1': 0.7478618244635508, 'roc_auc': 0.9540508732251707, 'threshold': np.float64(0.5442474916387959)}
+2025-11-30 19:50:31,255 - INFO - model_pipeline - Model pipeline completed successfully.
+2025-11-30 19:50:31,361 - INFO - __main__ - ===== FULL ML PIPELINE COMPLETED SUCCESSFULLY =====
